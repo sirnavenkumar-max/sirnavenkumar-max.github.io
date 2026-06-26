@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delivery Signal — Practitioner Blueprints for AI-Era Delivery</title>
+<meta name="description" content="10 practitioner blueprints synthesising AI-Native SAFe, DORA 2025, Platform Engineering, Team Topologies, and real case studies. Free reference for enterprise delivery leaders.">
+<meta property="og:title" content="Delivery Signal">
+<meta property="og:description" content="10 practitioner blueprints for AI-era delivery. Free. No login.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- Google Analytics GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
+
+<!-- Plausible Analytics (privacy-first, no cookies) -->
+<script defer data-domain="sirnavenkumar-max.github.io/delivery-signal" src="https://plausible.io/js/script.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:    #080d1a;
+  --navy-2:  #0d1425;
+  --navy-3:  #111827;
+  --border:  #1e2a3d;
+  --border-2:#243347;
+  --signal:  #0ea5e9;
+  --signal-2:#38bdf8;
+  --signal-dim: rgba(14,165,233,0.12);
+  --warm:    #f8f9fb;
+  --mid:     #94a3b8;
+  --muted:   #475569;
+  --green:   #10b981;
+  --amber:   #f59e0b;
+  --purple:  #a78bfa;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--navy);
+  color: var(--warm);
+  font-size: 15px;
+  line-height: 1.65;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  height: 60px;
+  background: rgba(8,13,26,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.logo {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--warm);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--signal);
+  animation: pulse-dot 2.4s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+.topbar-cta {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--signal);
+  text-decoration: none;
+  border: 1px solid rgba(14,165,233,0.35);
+  padding: 7px 18px;
+  border-radius: 6px;
+  transition: background 0.15s, border-color 0.15s;
+}
+.topbar-cta:hover {
+  background: var(--signal-dim);
+  border-color: var(--signal);
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 120px 48px 80px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 60%, rgba(14,165,233,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 80% 30%, rgba(167,139,250,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* THE SIGNAL LINE — signature element */
+.signal-line-wrap {
+  position: absolute;
+  bottom: 140px; left: 0; right: 0;
+  height: 40px;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.35;
+}
+.signal-line-svg {
+  width: 100%;
+  height: 40px;
+}
+
+.hero-content { position: relative; max-width: 860px; }
+.hero-eyebrow {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--signal);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: block;
+  width: 28px; height: 1px;
+  background: var(--signal);
+}
+
+.hero h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(38px, 6vw, 72px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 24px;
+}
+.hero h1 em {
+  font-style: normal;
+  color: var(--signal);
+}
+
+.hero-sub {
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--mid);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 56px;
+}
+.btn-primary {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 14px 28px;
+  background: var(--signal);
+  color: var(--navy);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.15s, transform 0.15s;
+  display: inline-block;
+}
+.btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.btn-ghost {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 14px 24px;
+  background: transparent;
+  color: var(--mid);
+  border: 1px solid var(--border-2);
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.15s, border-color 0.15s;
+  display: inline-block;
+}
+.btn-ghost:hover { color: var(--warm); border-color: var(--mid); }
+
+/* Hero stats */
+.hero-stats {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+}
+.stat-item .stat-value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--warm);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-item .stat-label {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* ── TICKER STRIP ── */
+.ticker-strip {
+  background: var(--signal-dim);
+  border-top: 1px solid rgba(14,165,233,0.2);
+  border-bottom: 1px solid rgba(14,165,233,0.2);
+  padding: 12px 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.ticker-inner {
+  display: inline-block;
+  animation: ticker 40s linear infinite;
+}
+.ticker-item {
+  display: inline-block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--signal-2);
+  padding: 0 32px;
+}
+.ticker-item::after {
+  content: '·';
+  margin-left: 32px;
+  opacity: 0.4;
+}
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ── SECTIONS ── */
+.section {
+  padding: 80px 48px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.section-eyebrow {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--signal);
+  margin-bottom: 8px;
+}
+.section-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+  line-height: 1.15;
+}
+.section-sub {
+  font-size: 16px;
+  color: var(--mid);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 48px;
+}
+
+/* ── BLUEPRINT CARDS ── */
+.blueprints-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.bp-card {
+  background: var(--navy-2);
+  padding: 28px 28px 24px;
+  text-decoration: none;
+  display: block;
+  transition: background 0.15s;
+  position: relative;
+}
+.bp-card:hover { background: var(--navy-3); }
+.bp-card::after {
+  content: '→';
+  position: absolute;
+  top: 28px; right: 24px;
+  font-size: 16px;
+  color: var(--muted);
+  transition: color 0.15s, right 0.15s;
+}
+.bp-card:hover::after { color: var(--signal); right: 20px; }
+
+.bp-num {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+.bp-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--warm);
+  margin-bottom: 8px;
+  line-height: 1.3;
+  padding-right: 24px;
+}
+.bp-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.bp-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.bp-tag {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--signal-dim);
+  color: var(--signal-2);
+  border: 1px solid rgba(14,165,233,0.2);
+}
+
+/* ── WHY NOW BAND ── */
+.why-now {
+  background: var(--navy-2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 72px 48px;
+}
+.why-now-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+.why-now-text .headline {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(22px, 2.5vw, 32px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+.why-now-text p {
+  font-size: 15px;
+  color: var(--mid);
+  line-height: 1.75;
+  margin-bottom: 12px;
+}
+.why-now-text p:last-child { margin-bottom: 0; }
+.why-now-text strong { color: var(--warm); font-weight: 500; }
+
+.signal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.signal-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 16px 20px;
+  background: var(--navy);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.signal-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.signal-item h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--warm);
+  margin-bottom: 3px;
+}
+.signal-item p {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+/* ── SOURCES BAND ── */
+.sources {
+  padding: 56px 48px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.sources-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.source-chip {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  padding: 7px 14px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--navy-2);
+}
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.footer-left {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--warm);
+}
+.footer-right {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+  text-align: right;
+}
+.footer-right a { color: var(--signal); text-decoration: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .topbar { padding: 0 20px; }
+  .hero { padding: 100px 20px 60px; }
+  .section { padding: 56px 20px; }
+  .why-now { padding: 56px 20px; }
+  .why-now-inner { grid-template-columns: 1fr; gap: 40px; }
+  .sources { padding: 40px 20px; }
+  footer { padding: 24px 20px; flex-direction: column; text-align: center; }
+  .footer-right { text-align: center; }
+  .hero-stats { gap: 24px; }
+  .topbar-cta { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-dot { animation: none; }
+  .ticker-inner { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<nav class="topbar">
+  <a href="#" class="logo">
+    <span class="logo-dot"></span>
+    Delivery Signal
+  </a>
+  <a href="blueprints/index.html" class="topbar-cta" onclick="gtag('event','click',{event_category:'CTA',event_label:'topbar'})">Open Wiki →</a>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-bg"></div>
+
+  <!-- THE SIGNAL LINE -->
+  <div class="signal-line-wrap">
+    <svg class="signal-line-svg" viewBox="0 0 1440 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="20" x2="1440" y2="20" stroke="#0ea5e9" stroke-width="1" stroke-dasharray="4 8" />
+      <circle r="4" fill="#0ea5e9">
+        <animateMotion dur="6s" repeatCount="indefinite">
+          <mpath>
+            <path d="M0,20 Q360,5 720,20 Q1080,35 1440,20" />
+          </mpath>
+        </animateMotion>
+      </circle>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">AI-Native SAFe · DORA 2025 · Platform Engineering</div>
+
+    <h1>The delivery wiki<br>the <em>AI era</em> needs</h1>
+
+    <p class="hero-sub">
+      Ten practitioner blueprints synthesising the frameworks, case studies, and real signals shaping enterprise software delivery in 2026. Free. No login. No paywall.
+    </p>
+
+    <div class="hero-actions">
+      <a href="blueprints/index.html" class="btn-primary" onclick="gtag('event','click',{event_category:'CTA',event_label:'hero-primary'})">
+        Read the blueprints
+      </a>
+      <a href="#blueprints" class="btn-ghost">See what's inside</a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-value">10</div>
+        <div class="stat-label">Practitioner blueprints</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">23 Jun</div>
+        <div class="stat-label">AI-Native SAFe — synthesised<br>within 3 days of release</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">DORA 5</div>
+        <div class="stat-label">2025 metrics model<br>fully covered</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">3</div>
+        <div class="stat-label">Deep case studies:<br>Spotify · ING · Netflix</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker-strip" aria-hidden="true">
+  <div class="ticker-inner">
+    <span class="ticker-item">AI-Native SAFe — Released 23 June 2026</span>
+    <span class="ticker-item">DORA 2025 — Five Metrics + Seven Team Archetypes</span>
+    <span class="ticker-item">Platform Engineering — 80% adoption by 2026 (Gartner)</span>
+    <span class="ticker-item">Team Topologies — Four team types for AI-era orgs</span>
+    <span class="ticker-item">Follow-the-Sun — Decentralised delivery model</span>
+    <span class="ticker-item">AI Productivity Paradox — Individual output up, team throughput flat</span>
+    <span class="ticker-item">AI Value Architect — New role from AI-Native SAFe</span>
+    <span class="ticker-item">Lean Portfolio Management — Value stream funding model</span>
+    <!-- Duplicate for seamless loop -->
+    <span class="ticker-item">AI-Native SAFe — Released 23 June 2026</span>
+    <span class="ticker-item">DORA 2025 — Five Metrics + Seven Team Archetypes</span>
+    <span class="ticker-item">Platform Engineering — 80% adoption by 2026 (Gartner)</span>
+    <span class="ticker-item">Team Topologies — Four team types for AI-era orgs</span>
+    <span class="ticker-item">Follow-the-Sun — Decentralised delivery model</span>
+    <span class="ticker-item">AI Productivity Paradox — Individual output up, team throughput flat</span>
+    <span class="ticker-item">AI Value Architect — New role from AI-Native SAFe</span>
+    <span class="ticker-item">Lean Portfolio Management — Value stream funding model</span>
+  </div>
+</div>
+
+<!-- WHY NOW -->
+<div class="why-now">
+  <div class="why-now-inner">
+    <div class="why-now-text">
+      <div class="section-eyebrow">Why this exists</div>
+      <div class="headline">The frameworks changed.<br>Most practitioners haven't.</div>
+      <p>Scaled Agile released <strong>AI-Native SAFe</strong> on 23 June 2026 — the biggest evolution to the framework in 15 years. DORA replaced its four performance tiers with seven team archetypes. Platform Engineering went from trend to default delivery infrastructure.</p>
+      <p>Most reference material hasn't caught up. This wiki has. It synthesises the cutting edge into practitioner-grade blueprints: what's changed, what it means, and what to do about it.</p>
+      <p>Built for <strong>delivery leaders, scaled agile practitioners, and engineering executives</strong> who need to operate at the frontier — not study a framework that was current four years ago.</p>
+    </div>
+    <div class="signal-list">
+      <div class="signal-item">
+        <div class="signal-icon">⚡</div>
+        <div>
+          <h4>AI-Native SAFe — synthesised immediately</h4>
+          <p>The new AI Value Architect role, smaller AI-augmented teams, outcomes-first governance. Covered within days of release.</p>
+        </div>
+      </div>
+      <div class="signal-item">
+        <div class="signal-icon">📊</div>
+        <div>
+          <h4>DORA 2025 — the full model</h4>
+          <p>All five metrics including new Rework Rate. Seven team archetypes with SPC-level diagnostic interpretation for each.</p>
+        </div>
+      </div>
+      <div class="signal-item">
+        <div class="signal-icon">🏗️</div>
+        <div>
+          <h4>Platform Engineering as delivery infrastructure</h4>
+          <p>Not a trend — the structural foundation for 80% of large engineering organisations by 2026. What makes it work and what doesn't.</p>
+        </div>
+      </div>
+      <div class="signal-item">
+        <div class="signal-icon">🌐</div>
+        <div>
+          <h4>Decentralised teams — built in, not bolted on</h4>
+          <p>Every blueprint includes a decentralised edge. Follow-the-sun, async operating models, hub governance, shadow AI risk.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BLUEPRINTS -->
+<div class="section" id="blueprints">
+  <div class="section-eyebrow">The Wiki</div>
+  <div class="section-title">Ten blueprints. One reference.</div>
+  <p class="section-sub">Each blueprint is a practitioner-grade reference — not a summary, not a slide deck. SPC-level depth with direct consulting application.</p>
+
+  <div class="blueprints-grid">
+
+    <a href="blueprints/index.html#panel-delivery" class="bp-card" onclick="gtag('event','click',{event_category:'Blueprint',event_label:'delivery'})">
+      <div class="bp-num">Blueprint 01</div>
+      <div class="bp-title">Delivery Blueprint</div>
+      <div class="bp-desc">Platform Engineering, Team Topologies, AI-Native SAFe, and the 10-week async PI cadence. With DORA 2025 interpretation for every metric.</div>
+      <div class="bp-tags"><span class="bp-tag">SAFe</span><span class="bp-tag">DORA</span><span class="bp-tag">Platform Eng</span></div>
+    </a>
+
+    <a href="blueprints/index.html#panel-governance" class="bp-card" onclick="gtag('event','click',{event_category:'Blueprint',event_label:'governance'})">
+      <div class="bp-num">Blueprint 02</div>
+      <div class="bp-title">Governance Blueprint</div>
+      <div class="bp-desc">Three-layer governance architecture, AI governance from AI-Native SAFe, decision rights matrix, and ceremony design for distributed ARTs.</div>
+      <div class="bp-tags"><span class="bp-tag">LPM</span><span class="bp-tag">AI Governance</span><span class="bp-tag">Decision Rights</span></div>
+    </a>
+
+    <a href="blueprints/index.html#panel-dependency" class="bp-card" onclick="gtag('event','click',{event_category:'Blueprint',event_label:'dependency'})">
+      <div class="bp-num">Blueprint 03</div>
+      <div class="bp-title">Dependency Blueprint</div>
+      <div class="bp-desc">Four dependency types, resolution flow, SADL artifact stack, and the pre-BRP checklist for zero unresolved dependencies entering Week 1.</div>
+      <div class="bp-tags"><span class="bp-tag">ART</span><span class="bp-tag">SADL</span><span class="bp-tag">PI Planning</span></div>
+    </a>
+
+    <a href="blueprints/index.html#panel-funding" class="bp-card" onclick="gtag('event','click',{event_category:'Blueprint',event_label:'funding'})">
+      <div class="bp-num">Blueprint 04</div>
+      <div class="bp-title">Funding Blueprint</div>
+      <div class="bp-desc">Lean Portfolio Management, value stream funding vs. project funding, AI investment governance, and C-suite ROI language for delivery leaders.</div>
+      <div class="bp-tags"><span class="bp-tag">LPM</span><span class="bp-tag">FinOps</span><span class="bp-tag">AI ROI</span></div>
+    </a>
+
+    <a href="blueprints/index.html#panel-people" class="bp-card" onclick="gtag('event','click',{event_category:'Blueprint',event_label:'people'})">
+      <div class="bp-num">Blueprint 05</div>
+      <div class="bp-title">People Blueprint</div>
+      <div class="bp-desc">AI-era workforce model, Build/Buy/Borrow talent strategy, new native roles from AI-Native SAFe, and the T-shaped skills framework for 2026.</div>
+      <div class="bp-tags"><span class="bp-tag">Talent</span><span class="bp-tag">AI Skills</span><span class="bp-tag">Workforce</span></div>
+    </a>
+
+    <a href="blueprints/index.html#panel-architecture" class="bp-card" onclick="gtag('event','click',{event_category:'Blueprint',event_label:'architecture'})">
+      <div class="bp-num">Blueprint 06</div>
+      <div class="bp-title">Architecture Blueprint</div>
+      <div class="bp-desc">Seven enterprise patterns, EDA deep-dive, architecture runway, Conway's Law as a diagnostic tool, and AI/agentic architecture layer.</div>
+      <div class="bp-tags"><span class="bp-tag">EDA</span><span class="bp-tag">DDD</span><span class="bp-tag">Platform Eng</span></div>
+    </a>
+
+    <a href="blueprints/index.html#panel-aivalue" class="bp-card" onclick="gtag('event','click',{event_category:'Blueprint',event_label:'aivalue'})">
+      <div class="bp-num">Blueprint 07</div>
+      <div class="bp-title">AI Value Blueprint</div>
+      <div class="bp-desc">The AI Productivity Paradox explained. AI Value Architect role. Four-stage AI Maturity Model. DORA 2025's seven AI capabilities diagnostic.</div>
+      <div class="bp-tags"><span class="bp-tag">DORA 2025</span><span class="bp-tag">AI Maturity</span><span class="bp-tag">ROI</span></div>
+    </a>
+
+    <a href="blueprints/index.html#panel-metrics" class="bp-card" onclick="gtag('event','click',{event_category:'Blueprint',event_label:'metrics'})">
+      <div class="bp-num">Blueprint 08</div>
+      <div class="bp-title">Metrics Blueprint</div>
+      <div class="bp-desc">Complete four-layer stack: DORA 5 + SPACE + Flow Metrics + Business Outcomes. Seven DORA archetypes with SPC prescriptions. Full PI dashboard.</div>
+      <div class="bp-tags"><span class="bp-tag">DORA</span><span class="bp-tag">SPACE</span><span class="bp-tag">Flow Metrics</span></div>
+    </a>
+
+    <a href="blueprints/index.html#panel-casestudies" class="bp-card" onclick="gtag('event','click',{event_category:'Blueprint',event_label:'casestudies'})">
+      <div class="bp-num">Blueprint 09</div>
+      <div class="bp-title">Case Studies Wiki</div>
+      <div class="bp-desc">Spotify, ING Bank, and Netflix — examined not as inspiration but as diagnostic evidence. What worked, what failed, and what's actually transferable.</div>
+      <div class="bp-tags"><span class="bp-tag">Spotify</span><span class="bp-tag">ING</span><span class="bp-tag">Netflix</span></div>
+    </a>
+
+    <a href="blueprints/index.html#panel-decentralised" class="bp-card" onclick="gtag('event','click',{event_category:'Blueprint',event_label:'decentralised'})">
+      <div class="bp-num">Blueprint 10</div>
+      <div class="bp-title">Decentralised Teams Blueprint</div>
+      <div class="bp-desc">Three distributed models, async as an operating system, follow-the-sun delivery, hub governance, shadow AI risk, and the 8-point SPC diagnostic.</div>
+      <div class="bp-tags"><span class="bp-tag">Async-First</span><span class="bp-tag">Follow-the-Sun</span><span class="bp-tag">Offshore</span></div>
+    </a>
+
+  </div>
+</div>
+
+<!-- SOURCES -->
+<div class="sources">
+  <div class="section-eyebrow" style="margin-bottom:16px">Built on</div>
+  <div class="sources-grid">
+    <span class="source-chip">AI-Native SAFe (Jun 2026)</span>
+    <span class="source-chip">DORA 2025 State of AI-Assisted Development</span>
+    <span class="source-chip">Team Topologies — Skelton & Pais</span>
+    <span class="source-chip">Gartner Platform Engineering Research</span>
+    <span class="source-chip">Deloitte State of AI 2026</span>
+    <span class="source-chip">McKinsey ING Transformation Study</span>
+    <span class="source-chip">WEF Future of Jobs 2025</span>
+    <span class="source-chip">Austrian Post PRIME Model</span>
+    <span class="source-chip">IBM Forward Deployed Units 2026</span>
+    <span class="source-chip">Netflix Engineering Blog</span>
+    <span class="source-chip">Mo et al. 2026 — JITM Distributed Agile</span>
+    <span class="source-chip">PwC AI Skills Premium Report</span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">Delivery Signal</div>
+  <div class="footer-right">
+    A living practitioner wiki · Updated as the field moves<br>
+    <a href="blueprints/index.html">Open the full wiki →</a>
+  </div>
+</footer>
+
+<script>
+// Track scroll depth for GA
+let maxScroll = 0;
+window.addEventListener('scroll', () => {
+  const pct = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+  if (pct > maxScroll && pct % 25 === 0) {
+    maxScroll = pct;
+    gtag('event', 'scroll_depth', { event_category: 'Engagement', event_label: pct + '%' });
+  }
+}, { passive: true });
+
+// Track time on page
+setTimeout(() => gtag('event', 'time_on_page', { event_category: 'Engagement', event_label: '30s' }), 30000);
+setTimeout(() => gtag('event', 'time_on_page', { event_category: 'Engagement', event_label: '2min' }), 120000);
+</script>
+
+</body>
+</html>
