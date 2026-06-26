@@ -1,0 +1,2852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPC Authority Blueprints · 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --void: #08090d;
+    --ink: #f0f0ec;
+    --ink-dim: #8a8f9e;
+    --ink-muted: #4a4f60;
+    --surface: #0f1018;
+    --card: #13151f;
+    --card-hover: #181b28;
+    --border: #1e2132;
+    --border-bright: #2a2f48;
+
+    /* Accent system — each blueprint gets one */
+    --a-delivery: #00e5a0;
+    --a-governance: #6c8fff;
+    --a-dependency: #ff9f4a;
+    --a-funding: #d966ff;
+
+    --a-delivery-dim: rgba(0,229,160,0.08);
+    --a-governance-dim: rgba(108,143,255,0.08);
+    --a-dependency-dim: rgba(255,159,74,0.08);
+    --a-funding-dim: rgba(217,102,255,0.08);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--void);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  /* ── MASTHEAD ── */
+  .masthead {
+    position: relative;
+    padding: 72px 48px 56px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .masthead-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.4;
+  }
+  .masthead-glow {
+    position: absolute;
+    top: -120px; left: -80px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(0,229,160,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .masthead-glow-2 {
+    position: absolute;
+    bottom: -100px; right: -60px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(108,143,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .masthead-content { position: relative; max-width: 960px; }
+  .masthead-eyebrow {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--a-delivery);
+    margin-bottom: 18px;
+  }
+  .masthead h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  .masthead h1 .accent-g { color: var(--a-governance); }
+  .masthead h1 .accent-d { color: var(--a-delivery); }
+
+  .masthead-sub {
+    font-size: 15px;
+    color: var(--ink-dim);
+    max-width: 620px;
+    line-height: 1.7;
+    margin-bottom: 28px;
+  }
+  .masthead-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .pill {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border-bright);
+    color: var(--ink-dim);
+    background: var(--surface);
+  }
+  .pill.live {
+    border-color: var(--a-delivery);
+    color: var(--a-delivery);
+    background: var(--a-delivery-dim);
+  }
+
+  /* ── NAV ── */
+  .nav-strip {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+  }
+  .nav-btn {
+    flex: 1;
+    min-width: 160px;
+    padding: 14px 20px;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    text-align: center;
+  }
+  .nav-btn:hover { color: var(--ink); }
+  .nav-btn[data-panel="delivery"].active  { color: var(--a-delivery); border-bottom-color: var(--a-delivery); }
+  .nav-btn[data-panel="governance"].active { color: var(--a-governance); border-bottom-color: var(--a-governance); }
+  .nav-btn[data-panel="dependency"].active { color: var(--a-dependency); border-bottom-color: var(--a-dependency); }
+  .nav-btn[data-panel="funding"].active   { color: var(--a-funding); border-bottom-color: var(--a-funding); }
+  .nav-btn[data-panel="people"].active    { color: #f472b6; border-bottom-color: #f472b6; }
+  .nav-btn[data-panel="architecture"].active { color: #fb923c; border-bottom-color: #fb923c; }
+  .nav-btn[data-panel="aivalue"].active   { color: #a78bfa; border-bottom-color: #a78bfa; }
+  .nav-btn[data-panel="metrics"].active   { color: #34d399; border-bottom-color: #34d399; }
+  .nav-btn[data-panel="casestudies"].active { color: #fbbf24; border-bottom-color: #fbbf24; }
+  .nav-btn[data-panel="decentralised"].active { color: #22d3ee; border-bottom-color: #22d3ee; }
+
+  /* ── PANELS ── */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── SECTION LAYOUT ── */
+  .container { max-width: 1040px; margin: 0 auto; padding: 0 32px; }
+  .section { padding: 48px 0 0; }
+  .section:last-child { padding-bottom: 64px; }
+
+  .s-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .s-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 24px;
+    line-height: 1.25;
+  }
+  .s-intro {
+    font-size: 14px;
+    color: var(--ink-dim);
+    max-width: 680px;
+    line-height: 1.75;
+    margin-bottom: 32px;
+  }
+
+  /* ── GRID CARDS ── */
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 24px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .card:hover { background: var(--card-hover); border-color: var(--border-bright); }
+
+  .card-icon { font-size: 22px; margin-bottom: 12px; }
+  .card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .card p { font-size: 12px; color: var(--ink-dim); line-height: 1.7; }
+  .card ul { list-style: none; margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+  .card li {
+    font-size: 12px;
+    color: var(--ink-dim);
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.55;
+  }
+  .card li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    font-size: 13px;
+  }
+
+  /* ── SIGNAL STRIP ── */
+  .signal-strip {
+    display: flex;
+    gap: 1px;
+    background: var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+  .signal-cell {
+    flex: 1;
+    background: var(--card);
+    padding: 18px 20px;
+    text-align: center;
+    min-width: 120px;
+  }
+  .signal-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .signal-label { font-size: 11px; color: var(--ink-dim); line-height: 1.4; }
+
+  /* ── TIMELINE ── */
+  .timeline { display: flex; flex-direction: column; gap: 0; margin-bottom: 32px; }
+  .tl-row {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-bottom: none;
+  }
+  .tl-row:first-child { border-radius: 10px 10px 0 0; }
+  .tl-row:last-child { border-bottom: 1px solid var(--border); border-radius: 0 0 10px 10px; }
+  .tl-label {
+    background: var(--surface);
+    padding: 16px 18px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .tl-label .tl-phase {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .tl-label .tl-week {
+    font-size: 10px;
+    color: var(--ink-muted);
+    margin-top: 2px;
+  }
+  .tl-events {
+    background: var(--card);
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    width: fit-content;
+  }
+  .chip::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+  .chip.async { background: rgba(108,143,255,0.12); color: #6c8fff; border: 1px solid rgba(108,143,255,0.3); }
+  .chip.sync  { background: rgba(0,229,160,0.10); color: var(--a-delivery); border: 1px solid rgba(0,229,160,0.3); }
+  .chip.gate  { background: rgba(255,159,74,0.10); color: var(--a-dependency); border: 1px solid rgba(255,159,74,0.3); }
+  .chip.ai    { background: rgba(217,102,255,0.10); color: var(--a-funding); border: 1px solid rgba(217,102,255,0.3); }
+  .chip-note  { font-size: 11px; color: var(--ink-muted); padding-left: 2px; }
+
+  /* ── TABLE ── */
+  .bp-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+  .bp-table th {
+    background: var(--surface);
+    color: var(--ink-muted);
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 11px 16px;
+    text-align: left;
+  }
+  .bp-table td {
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--ink-dim);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.6;
+  }
+  .bp-table tr:last-child td { border-bottom: none; }
+  .bp-table tr:hover td { background: var(--card-hover); }
+  .td-primary { font-weight: 600; color: var(--ink); display: block; margin-bottom: 2px; }
+
+  /* ── CALLOUT ── */
+  .callout {
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+  }
+  .callout-header {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .callout p { font-size: 13px; line-height: 1.7; margin-bottom: 8px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout strong { font-weight: 600; }
+
+  .callout.delivery {
+    background: var(--a-delivery-dim);
+    border: 1px solid rgba(0,229,160,0.2);
+  }
+  .callout.delivery .callout-header { color: var(--a-delivery); }
+  .callout.delivery p { color: rgba(0,229,160,0.85); }
+
+  .callout.governance {
+    background: var(--a-governance-dim);
+    border: 1px solid rgba(108,143,255,0.2);
+  }
+  .callout.governance .callout-header { color: var(--a-governance); }
+  .callout.governance p { color: rgba(180,195,255,0.85); }
+
+  .callout.dependency {
+    background: var(--a-dependency-dim);
+    border: 1px solid rgba(255,159,74,0.2);
+  }
+  .callout.dependency .callout-header { color: var(--a-dependency); }
+  .callout.dependency p { color: rgba(255,200,140,0.85); }
+
+  .callout.funding {
+    background: var(--a-funding-dim);
+    border: 1px solid rgba(217,102,255,0.2);
+  }
+  .callout.funding .callout-header { color: var(--a-funding); }
+  .callout.funding p { color: rgba(230,175,255,0.85); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  /* ── CHECKLIST ── */
+  .checklist { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px; }
+  .cl-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+  }
+  .cl-item input[type="checkbox"] {
+    margin-top: 2px;
+    flex-shrink: 0;
+    width: 15px; height: 15px;
+  }
+  .cl-item label { font-size: 12px; color: var(--ink-dim); line-height: 1.6; cursor: pointer; }
+  .cl-item label strong { color: var(--ink); font-weight: 600; display: block; margin-bottom: 2px; }
+
+  /* ── MATRIX ── */
+  .matrix {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+  .matrix-cell {
+    background: var(--card);
+    padding: 20px 22px;
+  }
+  .matrix-cell h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .matrix-cell ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .matrix-cell li { font-size: 12px; color: var(--ink-dim); padding-left: 14px; position: relative; line-height: 1.5; }
+  .matrix-cell li::before { content: '›'; position: absolute; left: 0; }
+
+  /* ── FLOW ── */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    margin-bottom: 32px;
+    padding-bottom: 8px;
+  }
+  .flow-node {
+    flex-shrink: 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    text-align: center;
+    min-width: 120px;
+  }
+  .flow-node .fn-icon { font-size: 18px; margin-bottom: 4px; }
+  .flow-node .fn-label { font-size: 11px; font-weight: 600; color: var(--ink); }
+  .flow-node .fn-sub { font-size: 10px; color: var(--ink-muted); margin-top: 2px; }
+  .flow-arrow {
+    color: var(--ink-muted);
+    font-size: 18px;
+    padding: 0 8px;
+    flex-shrink: 0;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 20px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--ink-muted);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .footer strong { color: var(--ink-dim); }
+
+  @media (max-width: 640px) {
+    .masthead { padding: 48px 20px 36px; }
+    .container { padding: 0 16px; }
+    .matrix { grid-template-columns: 1fr; }
+    .tl-row { grid-template-columns: 90px 1fr; }
+    .signal-strip { flex-wrap: wrap; }
+    .footer { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-grid"></div>
+  <div class="masthead-glow"></div>
+  <div class="masthead-glow-2"></div>
+  <div class="masthead-content">
+    <div class="masthead-eyebrow">SPC Authority Series · June 2026</div>
+    <h1>Four Blueprints for the<br><span class="accent-d">AI-Era</span> <span class="accent-g">Delivery Leader</span></h1>
+    <p class="masthead-sub">
+      A practitioner-grade reference synthesising AI-Native SAFe (released 23 June 2026), Platform Engineering, DORA 2025, and Team Topologies — structured for a Scaled Agile Program Consultant building authoritative depth in software delivery.
+    </p>
+    <div class="masthead-pills">
+      <span class="pill live">AI-Native SAFe — Released 23 Jun 2026</span>
+      <span class="pill">SAFe SPC Lens</span>
+      <span class="pill">DORA 2025 · 5 Metrics</span>
+      <span class="pill">Team Topologies</span>
+      <span class="pill">Platform Engineering</span>
+      
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-strip">
+  <button class="nav-btn active" data-panel="delivery">01 · Delivery</button>
+  <button class="nav-btn" data-panel="governance">02 · Governance</button>
+  <button class="nav-btn" data-panel="dependency">03 · Dependency</button>
+  <button class="nav-btn" data-panel="funding">04 · Funding</button>
+  <button class="nav-btn" data-panel="people">05 · People</button>
+  <button class="nav-btn" data-panel="architecture">06 · Architecture</button>
+  <button class="nav-btn" data-panel="aivalue">07 · AI Value</button>
+  <button class="nav-btn" data-panel="metrics">08 · Metrics</button>
+  <button class="nav-btn" data-panel="casestudies">09 · Case Studies</button>
+  <button class="nav-btn" data-panel="decentralised">10 · Decentralised</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PANEL 1 · DELIVERY BLUEPRINT
+═══════════════════════════════════════════════════════════════ -->
+<div class="panel active" id="panel-delivery">
+<div class="container">
+
+  <div class="section">
+    <div class="s-label" style="color:var(--a-delivery)">Blueprint 01</div>
+    <div class="s-title">Delivery Blueprint</div>
+    <p class="s-intro">
+      The cutting edge of software delivery in 2026 is the convergence of three forces: <strong>Platform Engineering</strong> as organisational infrastructure, <strong>AI-Native SAFe</strong> as the scaled coordination model, and <strong>DORA 2025</strong> as the measurement language. For an SPC, mastering this convergence is the authority differentiator.
+    </p>
+  </div>
+
+  <!-- SIGNAL NUMBERS -->
+  <div class="section">
+    <div class="s-label" style="color:var(--a-delivery)">Current State · 2026 Signals</div>
+    <div class="signal-strip">
+      <div class="signal-cell">
+        <div class="signal-value" style="color:var(--a-delivery)">80%</div>
+        <div class="signal-label">Large orgs with platform teams by 2026 (Gartner)</div>
+      </div>
+      <div class="signal-cell">
+        <div class="signal-value" style="color:var(--a-delivery)">3.5×</div>
+        <div class="signal-label">Higher deployment frequency — mature platform orgs vs. rest</div>
+      </div>
+      <div class="signal-cell">
+        <div class="signal-value" style="color:#6c8fff">40%</div>
+        <div class="signal-label">Developer time lost to infra tasks before platform adoption</div>
+      </div>
+      <div class="signal-cell">
+        <div class="signal-value" style="color:#6c8fff">5</div>
+        <div class="signal-label">DORA metrics now (Rework Rate added 2025)</div>
+      </div>
+      <div class="signal-cell">
+        <div class="signal-value" style="color:var(--a-funding)">AI↑</div>
+        <div class="signal-label">AI amplifies strong teams. Exposes weak ones (DORA 2025)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE THREE MODELS -->
+  <div class="section">
+    <div class="s-label" style="color:var(--a-delivery)">Model Layer 1 — Organisation</div>
+    <div class="s-title">Team Topologies: the structural bedrock</div>
+    <p class="s-intro">Before delivery can be optimised, Conway's Law must be addressed. Team Topologies (Skelton & Pais, 2019) is now the organisational standard across Platform Engineering and SAFe alike.</p>
+    <div class="grid-3">
+      <div class="card" style="border-top:2px solid var(--a-delivery)">
+        <div class="card-icon">🚀</div>
+        <h3>Stream-Aligned Team</h3>
+        <p>The product squad. Aligned to a flow of business value — owns features end-to-end. Primary customer of the platform. In SAFe: the Agile Team within an ART.</p>
+        <ul>
+          <li>Minimum cognitive overhead on infra</li>
+          <li>Fully autonomous: design → build → deploy</li>
+          <li>SPC role: ensure ARTs contain stream-aligned teams, not functional silos</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:2px solid #6c8fff">
+        <div class="card-icon">🏗️</div>
+        <h3>Platform Team</h3>
+        <p>Builds and maintains the Internal Developer Platform (IDP). Treated as a product with a roadmap, developer NPS, and quarterly user research. Not infrastructure ops.</p>
+        <ul>
+          <li>Abstracts infra complexity from stream teams</li>
+          <li>Ships golden paths, not tickets</li>
+          <li>SPC role: advocate for dedicated platform ART investment</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:2px solid var(--a-dependency)">
+        <div class="card-icon">🧭</div>
+        <h3>Enabling Team</h3>
+        <p>Temporary specialists who help stream teams adopt new capabilities. Exists to teach, not to do. Dissolves once capability is embedded.</p>
+        <ul>
+          <li>Bridges skill gaps during transformation</li>
+          <li>Coaches AI tooling adoption without creating dependency</li>
+          <li>SPC role: design enabling team charters with clear exit criteria</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLATFORM ENGINEERING -->
+  <div class="section">
+    <div class="s-label" style="color:var(--a-delivery)">Model Layer 2 — Infrastructure</div>
+    <div class="s-title">Platform Engineering: the 2026 delivery engine</div>
+    <p class="s-intro">Platform Engineering is no longer a trend — it is the default delivery infrastructure for organisations at scale. The SPC must understand it deeply to advise ARTs correctly.</p>
+    <div class="grid-2">
+      <div class="card">
+        <h3>What a Mature IDP Provides</h3>
+        <ul>
+          <li>Self-service environment provisioning (minutes, not days)</li>
+          <li>Golden paths: opinionated CI/CD templates teams adopt voluntarily</li>
+          <li>Built-in FinOps: cost visibility before deploy, not after invoice</li>
+          <li>Security-as-platform-capability: shift-left becomes build-in</li>
+          <li>AI assistants embedded in the platform (73% of teams in 2026)</li>
+          <li>Service catalog (e.g. Backstage) as the developer front door</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>What the SPC Must Challenge</h3>
+        <ul>
+          <li>Platform teams treated as infra ops — not product teams with roadmaps</li>
+          <li>Platform adoption measured by ticket count, not developer NPS</li>
+          <li>"We have a platform" ≠ "developers use it" (30% achieve real gains)</li>
+          <li>AI tools bolted onto broken pipelines — amplifies dysfunction, not speed</li>
+          <li>Platform without cognitive load measurement is faith, not engineering</li>
+          <li>IDP launched without internal marketing, onboarding, or demo culture</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI NATIVE SAFE -->
+  <div class="section">
+    <div class="s-label" style="color:var(--a-delivery)">Model Layer 3 — Scale</div>
+    <div class="s-title">AI-Native SAFe: the framework just changed (23 June 2026)</div>
+    <div class="callout delivery">
+      <div class="callout-header">⚡ Breaking — Released 3 Days Ago</div>
+      <p>Scaled Agile released <strong>AI-Native SAFe</strong> on 23 June 2026 — the biggest evolution to the framework since its founding. It sits alongside Core SAFe, not replacing it. As an SPC, this is your immediate authority opportunity: most practitioners are not yet across it.</p>
+      <p>Chief Methodologist Andrew Sales: <em>"The bottleneck has moved. The challenge is no longer whether you can build it in time. It's keeping up with the need to validate whether what you're building is safe, secure, and valuable."</em></p>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-icon">🤖</div>
+        <h3>Smaller, AI-Augmented Teams</h3>
+        <p>Teams are restructured smaller with AI as a deliberate team member. Handoffs between humans and AI are explicitly designed into the model — not left to interpretation.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <h3>Outcomes at the Centre</h3>
+        <p>Outputs (features shipped) subordinated to outcomes (measurable value). Faster only means better when validation keeps pace. New AI Value Architect role owns this.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚖️</div>
+        <h3>Governance for AI</h3>
+        <p>Ethics, specifications/intent, and curated data management are now surface-level framework elements — not afterthoughts. Addresses the gap previous SAFe left for AI compliance.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELIVERY CADENCE -->
+  <div class="section">
+    <div class="s-label" style="color:var(--a-delivery)">Operating Cadence</div>
+    <div class="s-title">The 10-week async-first PI — SPC orchestration view</div>
+
+    <div class="timeline">
+      <div class="tl-row">
+        <div class="tl-label">
+          <div class="tl-phase" style="color:var(--a-delivery)">Pre-PI</div>
+          <div class="tl-week">Weeks −2 / −1</div>
+        </div>
+        <div class="tl-events">
+          <span class="chip async">Async: WSJF feature scoring + INVEST readiness gate</span>
+          <span class="chip async">Async: Architecture risk flags circulated — Loom / Confluence</span>
+          <span class="chip ai">AI: Dependency conflict scan across ART backlog</span>
+          <span class="chip sync">Sync: 45-min cross-tribe dependency negotiation (SADL-facilitated)</span>
+          <span class="chip gate">Gate: 100% features INVEST-ready before BRP opens</span>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-label">
+          <div class="tl-phase" style="color:var(--a-delivery)">BRP</div>
+          <div class="tl-week">Week 1 · 5hrs total</div>
+        </div>
+        <div class="tl-events">
+          <span class="chip sync">Sync: Day 1 — 3hr facilitated session (context, dependency resolution, squad breakouts)</span>
+          <span class="chip sync">Sync: Day 2 — 2hr confidence vote + PI objectives sign-off</span>
+          <span class="chip ai">AI: Real-time dependency risk flagging during BRP</span>
+          <span class="chip-note">Compressed from 2 full days. Only possible when features arrive ready.</span>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-label">
+          <div class="tl-phase" style="color:var(--a-delivery)">Iteration 1</div>
+          <div class="tl-week">Weeks 2–4</div>
+        </div>
+        <div class="tl-events">
+          <span class="chip async">Async: Squad boards live (Azure DevOps / Jira) — always-on visibility</span>
+          <span class="chip async">Async: Weekly SADL risk digest (Mon AM, written)</span>
+          <span class="chip sync">Sync: 30-min cross-squad blocker stand-up (Wed)</span>
+          <span class="chip ai">AI: DORA metric anomaly alerts — cycle time spike detection</span>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-label">
+          <div class="tl-phase" style="color:var(--a-delivery)">Iteration 2</div>
+          <div class="tl-week">Weeks 5–7</div>
+        </div>
+        <div class="tl-events">
+          <span class="chip async">Async: Mid-PI metrics pulse — flow, predictability, rework rate, scope drift</span>
+          <span class="chip sync">Sync: 60-min Mid-PI review — decisions only, no status</span>
+          <span class="chip ai">AI: OKR progress forecast vs. remaining PI capacity</span>
+          <span class="chip gate">Checkpoint: Benefits tracking vs. PI OKRs</span>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-label">
+          <div class="tl-phase" style="color:var(--a-delivery)">Iteration 3</div>
+          <div class="tl-week">Weeks 8–9</div>
+        </div>
+        <div class="tl-events">
+          <span class="chip async">Async: PI retrospective inputs — structured survey before live I&amp;A</span>
+          <span class="chip async">Async: Next-PI feature nominations open</span>
+          <span class="chip sync">Sync: 45-min I&amp;A — outcomes and actions only</span>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-label">
+          <div class="tl-phase" style="color:var(--a-delivery)">IP / Hardening</div>
+          <div class="tl-week">Week 10</div>
+        </div>
+        <div class="tl-events">
+          <span class="chip async">Async: Tech debt backlog reviewed by ADLs</span>
+          <span class="chip async">Async: PI Benefits Report circulated to stakeholders</span>
+          <span class="chip gate">Milestone: PI closure — OKR actuals recorded, next cycle begins</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DORA -->
+  <div class="section">
+    <div class="s-label" style="color:var(--a-delivery)">Measurement</div>
+    <div class="s-title">DORA 2025: the five metrics every SPC must command</div>
+    <table class="bp-table">
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th>What it measures</th>
+          <th>Elite benchmark</th>
+          <th>SPC interpretation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="td-primary">Deployment Frequency</span>How often code reaches production</td>
+          <td>Delivery throughput</td>
+          <td>Multiple times/day</td>
+          <td>Low frequency signals batch thinking — push toward trunk-based development</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Lead Time for Changes</span>Commit to production elapsed time</td>
+          <td>Flow efficiency</td>
+          <td>&lt;1 hour</td>
+          <td>Long lead times expose handoff queues — map the value stream, find the wait</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Change Failure Rate</span>% deployments causing production incident</td>
+          <td>Quality</td>
+          <td>&lt;5%</td>
+          <td>High CFR with AI tooling signals AI is amplifying defects — fix foundations first</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Failed Deployment Recovery Time</span>Time to restore service (renamed 2025)</td>
+          <td>Resilience</td>
+          <td>&lt;1 hour</td>
+          <td>Pairs with platform maturity — IDPs with automated rollback compress MTTR dramatically</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Rework Rate</span>New in 2025 — reactive vs. planned work ratio</td>
+          <td>Planning quality</td>
+          <td>&lt;10%</td>
+          <td>High rework rate is the PI planning signal — features weren't INVEST-ready at BRP</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout delivery">
+      <div class="callout-header">🧠 SPC Authority Point</div>
+      <p>DORA 2025 replaced the four-tier (Low → Elite) classification with <strong>seven team archetypes</strong> that combine delivery, stability, and wellbeing. Two teams can show identical DORA scores for different reasons — one healthy, one under unsustainable pressure. The dashboard alone doesn't reveal which. This is your consulting insight: diagnose the archetype, not just the number.</p>
+    </div>
+  </div>
+
+    <hr class="divider">
+    <div class="section">
+      <div class="s-label" style="color:#22d3ee">Decentralised Edge · Delivery</div>
+      <div class="s-title">What changes when your ART spans multiple time zones</div>
+      <div class="grid-2">
+        <div class="card" style="border-left:3px solid #22d3ee">
+          <h3>Async-First as Non-Negotiable</h3>
+          <ul>
+            <li>For distributed ARTs, higher async communication directly predicts higher software quality (Mo et al. 2026). Written artifacts replace coordination noise.</li>
+            <li>INVEST-ready features before BRP is even more critical — a feature that needs a meeting to understand is not ready for a distributed team</li>
+            <li>Structured async standups: progress + next step + blocker with owner. No status meeting equivalent needed.</li>
+            <li>Overlap window is scarce — reserve it for decisions only, never status</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left:3px solid #22d3ee">
+          <h3>Follow-the-Sun Delivery Model</h3>
+          <ul>
+            <li>True FTS: single owner + daily handoff. Failure mode: every shift reconstructs context before acting — eliminate through structured handoff packets</li>
+            <li>Best fit for: incident response, QA, platform operations, CI/CD monitoring — not complex feature development requiring tight collaboration</li>
+            <li>2-site model first: fewer handoffs, simpler governance. Add sites only when 2-site is proven</li>
+            <li>Definition of Done must be verifiable asynchronously — "done for this step" must be visible without a call</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PANEL 2 · GOVERNANCE BLUEPRINT
+═══════════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-governance">
+<div class="container">
+
+  <div class="section">
+    <div class="s-label" style="color:var(--a-governance)">Blueprint 02</div>
+    <div class="s-title">Governance Blueprint</div>
+    <p class="s-intro">
+      Governance in the AI-Native SAFe era is not about oversight ceremonies — it is about creating the structural conditions for <strong>fast, safe decision-making at every level</strong>. The SPC's role shifts from framework enforcer to governance architect.
+    </p>
+  </div>
+
+  <!-- GOVERNANCE LAYERS -->
+  <div class="section">
+    <div class="s-label" style="color:var(--a-governance)">Structure</div>
+    <div class="s-title">Three-layer governance architecture</div>
+    <div class="grid-3">
+      <div class="card" style="border-top:2px solid var(--a-funding)">
+        <div class="card-icon">🏛️</div>
+        <h3>Portfolio Layer</h3>
+        <p>Lean Portfolio Management (LPM). Connects strategy to execution. Governs budgets, value streams, and strategic themes.</p>
+        <ul>
+          <li>Portfolio Kanban: strategy → epic → feature flow</li>
+          <li>WSJF prioritisation at epic level</li>
+          <li>Participatory budgeting — not annual project approval</li>
+          <li>AI: portfolio-level delivery forecast and risk scan</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:2px solid var(--a-governance)">
+        <div class="card-icon">🚂</div>
+        <h3>Programme Layer</h3>
+        <p>ART / Tribe level. Orchestrates cross-team delivery within a PI cadence. RTE / SADL as primary governor.</p>
+        <ul>
+          <li>PI Planning as the synchronisation heartbeat</li>
+          <li>ART Sync: 15-min weekly (not a status meeting)</li>
+          <li>System Demo: bi-weekly integrated increment review</li>
+          <li>I&amp;A: PI-level learning and continuous improvement</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:2px solid var(--a-delivery)">
+        <div class="card-icon">⚡</div>
+        <h3>Team Layer</h3>
+        <p>Agile Team / Squad. Self-governing within guardrails set by the programme. Daily cadence, sprint review, retrospective.</p>
+        <ul>
+          <li>Definition of Done as the team's quality contract</li>
+          <li>Team Kanban: in-flight WIP limit governance</li>
+          <li>Built-in quality: test automation, pair review standards</li>
+          <li>AI: auto-flagging of stale in-progress items</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI GOVERNANCE -->
+  <div class="section">
+    <div class="s-label" style="color:var(--a-governance)">AI-Native SAFe Addition</div>
+    <div class="s-title">Governance for AI — the new layer</div>
+    <div class="callout governance">
+      <div class="callout-header">📐 What AI-Native SAFe Adds to Governance</div>
+      <p>AI-Native SAFe (June 2026) introduces <strong>ethics, specifications/intent, and curated data management</strong> as surface-level framework elements. The new <strong>AI Value Architect</strong> role is the governance interface — guiding teams toward outcomes while navigating cost, ethics, legal, and risk. For an SPC, this is the governance consulting wedge into AI transformation mandates.</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>AI Governance Decisions — Who Owns What</h3>
+        <ul>
+          <li><strong>AI Value Architect:</strong> Ethics guardrails, ROI validation, risk sign-off</li>
+          <li><strong>LPM / Portfolio:</strong> AI investment allocation, value stream AI strategy</li>
+          <li><strong>RTE / SADL:</strong> AI tool adoption standards across ART</li>
+          <li><strong>Product Manager:</strong> AI feature outcome definition and acceptance</li>
+          <li><strong>Agile Team:</strong> AI tool use within golden path guardrails</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>AI Governance Anti-Patterns to Diagnose</h3>
+        <ul>
+          <li>Tool-first AI adoption without outcome KPIs</li>
+          <li>AI coding assistants raising individual output, not team delivery (DORA paradox)</li>
+          <li>No defined human-AI handoff points in delivery flow</li>
+          <li>AI on top of dysfunctional pipelines — amplification of failure</li>
+          <li>Ethics and compliance as legal team's concern, not team-level practice</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- DECISION RIGHTS -->
+  <div class="section">
+    <div class="s-label" style="color:var(--a-governance)">Decision Rights</div>
+    <div class="s-title">Governance decision matrix</div>
+    <table class="bp-table">
+      <thead>
+        <tr>
+          <th>Decision type</th>
+          <th>Who decides</th>
+          <th>Cadence</th>
+          <th>Governance mechanism</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="td-primary">Strategic themes &amp; epics</span>What value streams we invest in</td>
+          <td>LPM / Business Owner</td>
+          <td>Continuous / Portfolio Kanban</td>
+          <td>WSJF + participatory budgeting session</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Feature priority within PI</span>What ships in this increment</td>
+          <td>Product Manager + RTE</td>
+          <td>PI Planning + Mid-PI</td>
+          <td>ART backlog + PI objectives sign-off</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Scope injection post-BRP</span>Unplanned work in-flight</td>
+          <td>SADL / RTE (explicit trade-off)</td>
+          <td>On-demand, structured</td>
+          <td>Fast-track intake — replaces silent squad absorption</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Technical architecture</span>System-level design decisions</td>
+          <td>System Architect + Lead Engineers</td>
+          <td>Weekly Architecture Sync</td>
+          <td>Architecture runway — enabler features in PI backlog</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">AI tool adoption</span>Which AI tools enter the golden path</td>
+          <td>AI Value Architect + Platform Team</td>
+          <td>Per tool evaluation cycle</td>
+          <td>Structured ethics + ROI gate before ART-wide rollout</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Team structure changes</span>Topology shifts, new squads</td>
+          <td>LPM + Agile Coach / SPC</td>
+          <td>Quarterly / PI boundary</td>
+          <td>Team Topologies design session — Conway's Law audit</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CEREMONY AUDIT -->
+  <div class="section">
+    <div class="s-label" style="color:var(--a-governance)">Ceremony Design</div>
+    <div class="s-title">What stays synchronous — and why</div>
+    <p class="s-intro">The governance trap is filling calendars. Synchronous time is scarce and should be reserved for decisions requiring emotional alignment, conflict resolution, and cross-ART dependency negotiation. Not status.</p>
+    <div class="matrix">
+      <div class="matrix-cell">
+        <h4 style="color:var(--a-delivery)">Keep Synchronous</h4>
+        <ul>
+          <li>PI Planning — alignment requires live negotiation</li>
+          <li>Mid-PI review — decisions with scope implications</li>
+          <li>I&amp;A — retrospective learning and action ownership</li>
+          <li>Architecture Sync — emergent design needs dialogue</li>
+          <li>Conflict resolution — dependency blockers, trade-off calls</li>
+          <li>System Demo — stakeholder confidence event</li>
+        </ul>
+      </div>
+      <div class="matrix-cell">
+        <h4 style="color:var(--a-funding)">Move Asynchronous</h4>
+        <ul>
+          <li>Status updates → async risk digest (written, Mon AM)</li>
+          <li>Feature discovery → readiness card (2 weeks before BRP)</li>
+          <li>Retro inputs → structured pre-survey</li>
+          <li>OKR tracking → live dashboard (always-on, not reported)</li>
+          <li>Partner/vendor updates → written digest</li>
+          <li>Benefits reporting → PI Benefits Report (circulated)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout governance">
+      <div class="callout-header">⚠️ The Governance Anti-Pattern Every SPC Must Call Out</div>
+      <p>Treating SAFe as a set of ceremonies rather than a governance system. The ceremony is the mechanism — the outcome is the mandate. An I&amp;A that produces no actioned improvements is governance theatre. A PI Planning event where features arrive unready is a coordination failure dressed as planning.</p>
+      <p>The SPC's authority signal: distinguish between <strong>governance that enables speed</strong> and <strong>governance that creates the illusion of control</strong>. Most organisations have too much of the latter.</p>
+    </div>
+  </div>
+
+    <hr class="divider">
+    <div class="section">
+      <div class="s-label" style="color:#22d3ee">Decentralised Edge · Governance</div>
+      <div class="s-title">Governing distributed teams without time-zone ceremony sprawl</div>
+      <div class="grid-2">
+        <div class="card" style="border-left:3px solid #22d3ee">
+          <h3>Decision Rights Must Be Explicit</h3>
+          <ul>
+            <li>Every async decision delay costs a full business day in a distributed team. Multiply by unresolved decisions per sprint — the delivery impact is measurable.</li>
+            <li>Define: what can be decided async, what needs live overlap, and who has final call. Document it. Make it visible.</li>
+            <li>Decentralise decisions to the lowest capable layer — don't pull offshore teams into AEST-only governance windows</li>
+            <li>Architecture Decision Records (ADRs) are governance instruments — distributed teams need decisions documented, not recalled verbally</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left:3px solid #22d3ee">
+          <h3>Shadow AI — The Distributed Governance Risk</h3>
+          <ul>
+            <li>IBM 2025: 1 in 5 orgs experienced incidents linked to shadow AI — unsanctioned tools adopted without IT oversight. Adds avg $670K to breach costs.</li>
+            <li>Distributed teams: shadow AI adoption is harder to detect and spreads faster across geographies and devices</li>
+            <li>SPC prescription: explicit approved AI tool list in onboarding. Not a ban — a governed list with fast addition process</li>
+            <li>Include shadow AI audit in PI retrospective inputs — normalise surfacing it</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PANEL 3 · DEPENDENCY BLUEPRINT
+═══════════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-dependency">
+<div class="container">
+
+  <div class="section">
+    <div class="s-label" style="color:var(--a-dependency)">Blueprint 03</div>
+    <div class="s-title">Dependency Blueprint</div>
+    <p class="s-intro">
+      Dependencies are the primary cause of PI predictability failure. At scale, they are invisible until they become blockers. The SADL / RTE's most valuable capability is <strong>making dependencies visible before they become risks</strong> — then resolving or routing them at the right layer.
+    </p>
+  </div>
+
+  <!-- DEPENDENCY TAXONOMY -->
+  <div class="section">
+    <div class="s-label" style="color:var(--a-dependency)">Classification</div>
+    <div class="s-title">Four dependency types — and how to handle each</div>
+    <div class="grid-2">
+      <div class="card" style="border-left:3px solid var(--a-delivery)">
+        <div class="card-icon">🔗</div>
+        <h3>Team-to-Team (within ART)</h3>
+        <p>Most common. Squad A needs Squad B's API before they can complete their feature. Managed at programme level during PI Planning and weekly ART Sync.</p>
+        <ul>
+          <li>Identify at BRP: feature dependency threads visible on the board</li>
+          <li>Resolve in-PI: ART Sync + direct team-to-team negotiation</li>
+          <li>Escalate to: RTE / SADL if not resolved within one sprint</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:3px solid var(--a-governance)">
+        <div class="card-icon">🌉</div>
+        <h3>ART-to-ART (cross-Tribe)</h3>
+        <p>Highest risk. Dependency on another ART's PI commitments. These must be negotiated before BRP — not discovered during the event.</p>
+        <ul>
+          <li>Identify at: Pre-PI dependency negotiation (Week −1)</li>
+          <li>Resolve via: Cross-ART dependency map owned by SADL</li>
+          <li>Escalate to: LPM / Portfolio if no resolution possible within PI</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:3px solid var(--a-dependency)">
+        <div class="card-icon">🏭</div>
+        <h3>Platform Dependencies</h3>
+        <p>Stream-aligned teams dependent on Platform team capabilities (new API, IDP feature, infrastructure change). Must be on the Platform ART's PI plan.</p>
+        <ul>
+          <li>Identify at: Feature readiness card — platform dependencies flagged</li>
+          <li>Resolve via: Platform ART PI commitment or enabler story</li>
+          <li>Risk: Platform team as bottleneck — this is an IDP maturity signal</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:3px solid var(--a-funding)">
+        <div class="card-icon">🤝</div>
+        <h3>External / Partner</h3>
+        <p>Third-party vendors, commercial partners, regulatory bodies. Outside the ART's control. Must be risk-flagged and have contingency planned in PI objectives.</p>
+        <ul>
+          <li>Map: Commercial dependency register (SADL-owned)</li>
+          <li>Manage: Weekly written partner status digest</li>
+          <li>Protect PI: Never make a PI objective dependent on an unconfirmed external commitment</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEPENDENCY FLOW -->
+  <div class="section">
+    <div class="s-label" style="color:var(--a-dependency)">Resolution Flow</div>
+    <div class="s-title">From identification to resolution</div>
+    <div class="flow">
+      <div class="flow-node">
+        <div class="fn-icon">🔍</div>
+        <div class="fn-label">Identify</div>
+        <div class="fn-sub">Feature readiness card</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="fn-icon">🗺️</div>
+        <div class="fn-label">Map</div>
+        <div class="fn-sub">Dependency board / thread</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="fn-icon">📋</div>
+        <div class="fn-label">Classify</div>
+        <div class="fn-sub">Type + owner + layer</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="fn-icon">🤝</div>
+        <div class="fn-label">Negotiate</div>
+        <div class="fn-sub">Pre-PI session</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="fn-icon">✅</div>
+        <div class="fn-label">Commit</div>
+        <div class="fn-sub">BRP — locked in PI plan</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="fn-icon">📡</div>
+        <div class="fn-label">Track</div>
+        <div class="fn-sub">Weekly risk digest</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="fn-icon">⚡</div>
+        <div class="fn-label">Escalate</div>
+        <div class="fn-sub">If unresolved 1 sprint</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEPENDENCY ARTIFACTS -->
+  <div class="section">
+    <div class="s-label" style="color:var(--a-dependency)">Artifacts</div>
+    <div class="s-title">What the SADL maintains</div>
+    <table class="bp-table">
+      <thead>
+        <tr>
+          <th>Artifact</th>
+          <th>Owner</th>
+          <th>Cadence</th>
+          <th>Contents</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="td-primary">Dependency Map</span>Cross-squad and cross-ART dependency threads</td>
+          <td>SADL / RTE</td>
+          <td>Weekly refresh; locked at BRP</td>
+          <td>From/to teams, feature affected, resolution status, risk level, owner</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Feature Readiness Card</span>Pre-BRP feature check including dependency flags</td>
+          <td>Product Manager + ADL</td>
+          <td>Per feature, 2 weeks before BRP</td>
+          <td>INVEST criteria, acceptance criteria, team dependencies, platform dependencies, external dependencies</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Weekly Risk Digest</span>Top risks including dependency blockers</td>
+          <td>SADL</td>
+          <td>Monday AM, async</td>
+          <td>Top 5 risks, owners, mitigations, escalation paths — dependency risks flagged by type</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">External Dependency Register</span>Partner / vendor commitments tracking</td>
+          <td>SADL + Commercial</td>
+          <td>Bi-weekly</td>
+          <td>Partner, commitment, confirmed Y/N, PI objective at risk, contingency plan</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DEPENDENCY CHECKLIST -->
+  <div class="section">
+    <div class="s-label" style="color:var(--a-dependency)">Pre-BRP Checklist</div>
+    <div class="s-title">Zero unresolved dependencies entering Week 1 — how to achieve it</div>
+    <div class="checklist">
+      <div class="cl-item">
+        <input type="checkbox" id="d1">
+        <label for="d1"><strong>Dependency flag on every Feature Readiness Card</strong>No feature enters BRP without its dependency field completed. Blank = not ready. SADL enforces this gate at Week −2.</label>
+      </div>
+      <div class="cl-item">
+        <input type="checkbox" id="d2">
+        <label for="d2"><strong>Cross-ART dependency session (Week −1)</strong>60-minute facilitated session. SADLs from all ARTs in the room. Every cross-ART dependency on the table — resolved or escalated to LPM before BRP opens.</label>
+      </div>
+      <div class="cl-item">
+        <input type="checkbox" id="d3">
+        <label for="d3"><strong>Dependency map published 48hrs before BRP</strong>All teams can see the full map. No surprises on the day. Async review window closes 24hrs before the event.</label>
+      </div>
+      <div class="cl-item">
+        <input type="checkbox" id="d4">
+        <label for="d4"><strong>External dependencies confirmed or risk-rated</strong>Any partner/vendor commitment not confirmed by Week −1 triggers a PI objective risk flag. Never commit PI goals to unconfirmed externals.</label>
+      </div>
+      <div class="cl-item">
+        <input type="checkbox" id="d5">
+        <label for="d5"><strong>Platform team PI commitments visible to all ARTs</strong>Platform team publishes their PI plan before BRP. Stream-aligned teams can see what platform capabilities will be available and when.</label>
+      </div>
+      <div class="cl-item">
+        <input type="checkbox" id="d6">
+        <label for="d6"><strong>Escalation path defined for in-PI dependency failures</strong>If a dependency breaks in-sprint, the resolution path is documented. Who decides? At what threshold? What's the trade-off mechanism? SADL owns this playbook.</label>
+      </div>
+    </div>
+
+    <div class="callout dependency">
+      <div class="callout-header">🎯 SPC Authority Point</div>
+      <p>At enterprise scale — 100+ squads, offshore capability hubs, commercial partners and third-party integrations — the dependency surface area is enormous. The SPC authority move is reframing the problem: <strong>most "dependency problems" are actually architecture problems</strong>. If teams are constantly blocked by each other, the coupling is too tight. The long-term fix is domain decomposition — not better dependency tracking. Both matter, but only one scales.</p>
+    </div>
+  </div>
+
+    <hr class="divider">
+    <div class="section">
+      <div class="s-label" style="color:#22d3ee">Decentralised Edge · Dependency</div>
+      <div class="s-title">Dependencies across time zones amplify faster than co-located ones</div>
+      <div class="grid-2">
+        <div class="card" style="border-left:3px solid #22d3ee">
+          <h3>The 24-Hour Dependency Tax</h3>
+          <ul>
+            <li>An unresolved dependency in a co-located team costs hours. In a distributed team, the same dependency costs days — one full timezone cycle per round-trip</li>
+            <li>Pre-PI dependency resolution becomes urgent, not optional. All cross-team dependencies must be resolved before Week 1 — no exceptions for distributed ARTs</li>
+            <li>Dependency map refresh must be continuous, not event-driven. Stale maps in distributed teams cause silent misalignment</li>
+            <li>"If it needs a meeting to resolve, it needed to be flagged two weeks earlier" — the distributed dependency principle</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left:3px solid #22d3ee">
+          <h3>Handoff Packet Standard</h3>
+          <ul>
+            <li>Every cross-timezone handoff needs a structured packet: current state, next action, blockers, owner, expected response time</li>
+            <li>Ownership must be singular at all times — "team owns it" in a distributed context means nobody owns it</li>
+            <li>Module/service-level ownership assignment: each distributed pod owns a distinct service boundary, minimising handoff need entirely</li>
+            <li>Code review SLA across timezones: define expected response window. Unreviewed PRs stall FTS pipelines silently</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PANEL 4 · FUNDING BLUEPRINT
+═══════════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-funding">
+<div class="container">
+
+  <div class="section">
+    <div class="s-label" style="color:var(--a-funding)">Blueprint 04</div>
+    <div class="s-title">Funding Blueprint</div>
+    <p class="s-intro">
+      Lean Portfolio Management (LPM) is the SPC's highest-leverage consulting surface. Most organisations are still funding projects, not products. The shift to <strong>value stream budgeting</strong> is where SPC advice creates executive-level impact — and where AI-Native SAFe now provides explicit governance support.
+    </p>
+  </div>
+
+  <!-- THE SHIFT -->
+  <div class="section">
+    <div class="s-label" style="color:var(--a-funding)">The Core Problem</div>
+    <div class="s-title">Project funding vs. value stream funding</div>
+    <div class="matrix">
+      <div class="matrix-cell">
+        <h4 style="color:#ff5555">Traditional Project Funding</h4>
+        <ul>
+          <li>Annual budget cycle — decisions made 12 months ahead</li>
+          <li>Funding tied to project scope — change is expensive</li>
+          <li>Output accountability: "Did we deliver the scope?"</li>
+          <li>Teams disbanded at project close — knowledge destroyed</li>
+          <li>Finance as gatekeeper — every change needs a business case</li>
+          <li>AI investments as separate budget lines — siloed from product</li>
+        </ul>
+      </div>
+      <div class="matrix-cell">
+        <h4 style="color:var(--a-funding)">Lean Portfolio / Value Stream Funding</h4>
+        <ul>
+          <li>Continuous investment in stable value streams</li>
+          <li>Budget guardrails replace fixed scope — ARTs flex within them</li>
+          <li>Outcome accountability: "Did we move the measure?"</li>
+          <li>Long-lived teams — capability compounds over time</li>
+          <li>Finance as partner — participatory budgeting at PI boundary</li>
+          <li>AI investment embedded in value stream budget — not a separate ask</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEAN BUDGET GUARDRAILS -->
+  <div class="section">
+    <div class="s-label" style="color:var(--a-funding)">Lean Budget Guardrails</div>
+    <div class="s-title">The four guardrail categories — SPC guide</div>
+    <div class="grid-2">
+      <div class="card" style="border-top:2px solid var(--a-funding)">
+        <div class="card-icon">💼</div>
+        <h3>Business Epics Budget</h3>
+        <p>Customer-facing product and feature development. The primary value-generating investment. Should represent the majority of value stream budget.</p>
+        <ul>
+          <li>Governed by: Portfolio Kanban — WSJF prioritisation</li>
+          <li>Adjusted: at PI boundary based on OKR performance</li>
+          <li>AI context: AI-generated features must pass outcome validation gate</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:2px solid #6c8fff">
+        <div class="card-icon">🏗️</div>
+        <h3>Enabler Epics Budget</h3>
+        <p>Architecture, infrastructure, technical debt. Enables future business capability. Without it, delivery velocity degrades. Often under-funded.</p>
+        <ul>
+          <li>Target: 20–30% of value stream budget (context-dependent)</li>
+          <li>SPC challenge: make enabler ROI visible to finance — not a cost, a capacity investment</li>
+          <li>AI context: AI infrastructure (model hosting, data pipelines) goes here</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:2px solid var(--a-delivery)">
+        <div class="card-icon">🔬</div>
+        <h3>Research &amp; Experimentation Budget</h3>
+        <p>Time-boxed exploration. Spikes, prototypes, market experiments. Produces learning, not necessarily shippable product. Governed by hypothesis and outcome, not output.</p>
+        <ul>
+          <li>Governed by: Lean business case + time-box (not open-ended)</li>
+          <li>AI context: AI pilot budget sits here — not the product budget</li>
+          <li>Kill criteria: defined upfront, honoured without political pressure</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:2px solid var(--a-dependency)">
+        <div class="card-icon">⚡</div>
+        <h3>Operational &amp; Run Budget</h3>
+        <p>Keep-the-lights-on costs. Cloud infrastructure, licences, on-call. Must be tracked separately — conflating it with product investment masks delivery economics.</p>
+        <ul>
+          <li>FinOps target: embed cost visibility in IDP — provisioning shows cost before deploy</li>
+          <li>SPC challenge: drive run cost reduction through platform maturity, not headcount</li>
+          <li>AI context: AI inference costs tracked here — surprisingly large at scale</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- PARTICIPATORY BUDGETING -->
+  <div class="section">
+    <div class="s-label" style="color:var(--a-funding)">Operating Model</div>
+    <div class="s-title">Participatory budgeting cycle — replacing annual approval</div>
+    <div class="timeline">
+      <div class="tl-row">
+        <div class="tl-label">
+          <div class="tl-phase" style="color:var(--a-funding)">Continuous</div>
+          <div class="tl-week">Always on</div>
+        </div>
+        <div class="tl-events">
+          <span class="chip async">Portfolio Kanban: epics flowing from strategic theme → funded</span>
+          <span class="chip ai">AI: portfolio-level spend vs. OKR progress — anomaly detection</span>
+          <span class="chip-note">Finance has always-on visibility. No quarterly budget surprises.</span>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-label">
+          <div class="tl-phase" style="color:var(--a-funding)">Per PI</div>
+          <div class="tl-week">Each PI boundary</div>
+        </div>
+        <div class="tl-events">
+          <span class="chip sync">Sync: 2hr participatory budgeting session — LPM + Finance + Business Owners</span>
+          <span class="chip async">Async: PI Benefits Report reviewed — actuals vs. targets</span>
+          <span class="chip gate">Decision: guardrail adjustments for next PI (not annual budget renegotiation)</span>
+          <span class="chip-note">Guardrails shift at PI boundary — not locked for 12 months. Agility in funding, not just delivery.</span>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-label">
+          <div class="tl-phase" style="color:var(--a-funding)">Annually</div>
+          <div class="tl-week">Strategic layer</div>
+        </div>
+        <div class="tl-events">
+          <span class="chip sync">Sync: Strategic portfolio review — value stream funding envelopes set</span>
+          <span class="chip async">Async: Strategic theme update — portfolio canvas refreshed</span>
+          <span class="chip-note">Annual cycle sets envelopes only. Real allocation decisions happen at PI boundary — closer to the work.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI INVESTMENT -->
+  <div class="section">
+    <div class="s-label" style="color:var(--a-funding)">AI Investment Governance</div>
+    <div class="s-title">How to fund AI correctly in SAFe — the 2026 model</div>
+    <div class="callout funding">
+      <div class="callout-header">🤖 AI-Native SAFe Funding Implication</div>
+      <p>AI-Native SAFe makes ROI on AI a first-class governance concern. The <strong>AI Value Architect</strong> role exists precisely to prevent the most common funding failure: AI as a separate budget line that produces isolated pilots, not enterprise-grade return. The SPC's advice should be to embed AI investment within value stream guardrails — not create a parallel "AI transformation" budget that bypasses LPM.</p>
+    </div>
+    <table class="bp-table">
+      <thead>
+        <tr>
+          <th>AI Investment Type</th>
+          <th>Budget bucket</th>
+          <th>Governance gate</th>
+          <th>Failure mode to avoid</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="td-primary">AI coding assistants</span>GitHub Copilot, Cursor, Codeium etc.</td>
+          <td>Operational / tooling</td>
+          <td>Adoption rate + DORA impact measurement</td>
+          <td>Individual productivity up, team delivery flat (DORA Paradox). Measure the right thing.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">AI features in product</span>Personalisation, recommendation, prediction</td>
+          <td>Business Epic</td>
+          <td>Outcome hypothesis + ethics review + AI Value Architect sign-off</td>
+          <td>Shipping AI features without outcome measurement. "AI" is not a PI objective.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">AI infrastructure</span>Model hosting, vector DBs, data pipelines</td>
+          <td>Enabler Epic</td>
+          <td>Architecture review + FinOps cost guardrail</td>
+          <td>AI infra costs exploding without FinOps — inference at scale is expensive.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">AI pilots / experiments</span>New model evaluation, GenAI prototypes</td>
+          <td>Research &amp; Experimentation</td>
+          <td>Lean business case + time-box + kill criteria</td>
+          <td>Pilots running indefinitely without a scaling decision — "pilot purgatory."</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">AI platform (IDP layer)</span>AI assistants embedded in developer platform</td>
+          <td>Enabler Epic</td>
+          <td>Platform team PI commitment + developer NPS tracking</td>
+          <td>AI in the platform that developers don't use. Build with pull, not push.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ROI LANGUAGE -->
+  <div class="section">
+    <div class="s-label" style="color:var(--a-funding)">Translating to Executive Language</div>
+    <div class="s-title">LPM metrics that CFOs and CEOs understand</div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-icon">📈</div>
+        <h3>Time-to-Market</h3>
+        <p>Lead time for changes (DORA) translated into business: weeks from idea to customer. Every sprint of lead time reduction is competitive advantage quantifiable in revenue terms.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">💰</div>
+        <h3>Cost of Delay</h3>
+        <p>The economic impact of delayed feature delivery. WSJF's CoD makes invisible cost visible. Teach finance: a 3-month delay on a $5M feature is a $1.25M quarterly loss.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">♻️</div>
+        <h3>Rework Cost</h3>
+        <p>Rework Rate (DORA 2025) × team cost = actual waste. Make this visible to portfolio sponsors. Every percentage point of unplanned injection has a dollar value.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <h3>PI Predictability</h3>
+        <p>&gt;85% features delivered as committed. Translate to finance: budget confidence. If we say $X delivers Y, we deliver Y at 85%+ rate. This is what project governance tries to achieve — LPM does it at speed.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📊</div>
+        <h3>Value Delivered per $</h3>
+        <p>OKR actuals vs. budget spend per PI. The PI Benefits Report creates this ratio. Over multiple PIs, it becomes a delivery efficiency trend — the portfolio's true P&amp;L signal.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🤖</div>
+        <h3>AI ROI</h3>
+        <p>Organisational delivery metrics (DORA), not individual tool adoption. AI investment justified by team-level throughput and quality improvement — not GitHub Copilot usage rate.</p>
+      </div>
+    </div>
+
+    <div class="callout funding">
+      <div class="callout-header">🏆 SPC Authority Point</div>
+      <p>The highest-value SPC intervention at portfolio level is becoming the <strong>translator between delivery reality and financial language</strong>. Most finance functions are not hostile to agile funding — they are unfamiliar with it. SPCs who can walk a CFO through LPM using terms like "investment guardrails," "Cost of Delay," and "PI-level ROI actuals" open doors that agile coaches who speak only in iterations and story points cannot reach.</p>
+      <p>In the context of AI-Native SAFe, this translation extends to AI ROI governance — a skill gap that is currently a significant market opportunity for SPCs building authority in software delivery.</p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     PANEL 5 · PEOPLE BLUEPRINT
+═══════════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-people">
+<div class="container">
+
+  <div class="section">
+    <div class="s-label" style="color:#f472b6">Blueprint 05</div>
+    <div class="s-title">People Blueprint</div>
+    <p class="s-intro">
+      The 2026 talent landscape has been structurally disrupted. AI skills command a 56% compensation premium (PwC). Skills gaps are now the primary barrier to business execution — not funding, not tools. For an SPC, the people dimension is where transformation succeeds or collapses. Ceremony redesign means nothing if the humans inside it can't operate at the pace AI now enables.
+    </p>
+  </div>
+
+  <div class="section">
+    <div class="s-label" style="color:#f472b6">Structural Shift</div>
+    <div class="s-title">The workforce has fundamentally changed</div>
+    <div class="signal-strip">
+      <div class="signal-cell">
+        <div class="signal-value" style="color:#f472b6">56%</div>
+        <div class="signal-label">Pay premium for engineers with advanced AI skills (PwC 2026)</div>
+      </div>
+      <div class="signal-cell">
+        <div class="signal-value" style="color:#f472b6">85%</div>
+        <div class="signal-label">Leaders say speed of adaptation is critical — only 7% lead on it (Deloitte)</div>
+      </div>
+      <div class="signal-cell">
+        <div class="signal-value" style="color:#f472b6">34%</div>
+        <div class="signal-label">Organisations truly reimagining business with AI (Deloitte 2026)</div>
+      </div>
+      <div class="signal-cell">
+        <div class="signal-value" style="color:#f472b6">6×</div>
+        <div class="signal-label">IBM Forward Deployed Units: 6-person AI pod delivers work of 30</div>
+      </div>
+      <div class="signal-cell">
+        <div class="signal-value" style="color:#f472b6">78M</div>
+        <div class="signal-label">Net new jobs created by AI by 2030 (WEF — 170M created, 92M displaced)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="s-label" style="color:#f472b6">Role Evolution</div>
+    <div class="s-title">What roles look like in AI-augmented delivery teams</div>
+    <div class="grid-3">
+      <div class="card" style="border-top:2px solid #f472b6">
+        <div class="card-icon">👷</div>
+        <h3>Engineer → Curator / Orchestrator</h3>
+        <p>Engineers spend less time writing foundational code and more time orchestrating AI agents, reviewing AI-generated output, and ensuring architectural alignment. Code quality and system design judgment become the premium skill.</p>
+        <ul>
+          <li>AI writes the code; humans decide if it's right</li>
+          <li>New cognitive load: managing 67% more PR contexts daily (DORA 2026)</li>
+          <li>SPC lens: redefine Definition of Done for AI-generated code</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:2px solid #f472b6">
+        <div class="card-icon">🧠</div>
+        <h3>New Native Roles (2025–26)</h3>
+        <p>Roles that didn't exist at scale 3 years ago are now standard in high-performing engineering organisations. These sit at the intersection of AI capability and delivery governance.</p>
+        <ul>
+          <li><strong>AI Value Architect</strong> — outcomes, ethics, ROI (AI-Native SAFe)</li>
+          <li><strong>AI Agent Orchestrator</strong> — manages the fleet of autonomous agents</li>
+          <li><strong>Human-AI Interaction Specialist</strong> — designs human-AI handoffs</li>
+          <li><strong>AI Quality Steward</strong> — validation and audit of AI outputs</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:2px solid #f472b6">
+        <div class="card-icon">🤝</div>
+        <h3>Human Advantage Skills</h3>
+        <p>As AI absorbs execution, the human premium shifts to skills machines can't replicate. These are now the most valuable — and most scarce — capabilities in delivery teams.</p>
+        <ul>
+          <li>Contextual judgment and trade-off reasoning</li>
+          <li>Stakeholder empathy and relationship management</li>
+          <li>Cross-domain systems thinking</li>
+          <li>Change leadership and psychological safety creation</li>
+          <li>Ethical reasoning and accountability ownership</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="s-label" style="color:#f472b6">Skills Framework</div>
+    <div class="s-title">The 2026 T-shape — what the SPC must develop and coach</div>
+    <table class="bp-table">
+      <thead>
+        <tr><th>Skill domain</th><th>What it means in practice</th><th>Build / Buy / Borrow</th><th>SPC coaching priority</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="td-primary">AI Fluency</span>Prompt engineering, AI tool evaluation, output validation</td>
+          <td>Every engineer uses AI tools; few use them with rigour</td>
+          <td>Build — mandatory, not optional</td>
+          <td>Frame AI literacy as a core competency, not an elective. Non-negotiable by PI 3.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Flow Thinking</span>Value stream mapping, WIP limits, cycle time awareness</td>
+          <td>Understanding where work slows — not just how to build fast</td>
+          <td>Build via coaching</td>
+          <td>Instrument DORA metrics at team level. Make flow visible before optimising it.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Platform Literacy</span>IDP usage, golden path adoption, self-service infrastructure</td>
+          <td>Engineers who know how to use the platform reduce SADL/DevOps escalations</td>
+          <td>Build via platform onboarding</td>
+          <td>Advocate for platform team to run internal demos and onboarding — not docs alone.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Domain Depth</span>Business domain knowledge alongside technical capability</td>
+          <td>T-shaped engineers understand the business context of their code</td>
+          <td>Build via rotation and pairing</td>
+          <td>Design cross-squad rotation programs. Business domain ignorance is a delivery risk.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Async Communication</span>Written clarity, structured async artifacts, decision documentation</td>
+          <td>Critical for distributed / offshore teams. Replaces meeting noise with precision</td>
+          <td>Build via norms and templates</td>
+          <td>Set async communication standards at ART level. Written clarity is a technical skill.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Ethical Reasoning</span>Bias awareness, responsible AI, data privacy principles</td>
+          <td>Embedded in team workflow — not delegated to Legal or Compliance</td>
+          <td>Build + specialist Borrow</td>
+          <td>Include ethics check in Definition of Done for AI-touching features. Not a gate, a habit.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="s-label" style="color:#f472b6">Talent Model</div>
+    <div class="s-title">Build · Buy · Borrow — the 2026 talent supply chain</div>
+    <div class="matrix">
+      <div class="matrix-cell">
+        <h4 style="color:#f472b6">BUILD (Internal Upskilling)</h4>
+        <ul>
+          <li>AI literacy programs — mandatory, role-specific, in workflow</li>
+          <li>AI Champions per squad — peer mentors, not managers</li>
+          <li>Cross-domain rotation to develop T-shaped engineers</li>
+          <li>Internal mobility marketplace — skills over titles</li>
+          <li>Learning in flow: AI-delivered, personalised, just-in-time</li>
+        </ul>
+      </div>
+      <div class="matrix-cell">
+        <h4 style="color:#f472b6">BUY (Strategic Hiring)</h4>
+        <ul>
+          <li>Skills-based hiring: specific capability clusters, not job titles</li>
+          <li>AI-native roles: Value Architect, Agent Orchestrator, Quality Steward</li>
+          <li>Platform engineers with product mindset (rare, high value)</li>
+          <li>Domain specialists who can speak both business and AI</li>
+        </ul>
+      </div>
+      <div class="matrix-cell">
+        <h4 style="color:#f472b6">BORROW (Contingent / Partner)</h4>
+        <ul>
+          <li>Enabling teams (Team Topologies) for capability injection</li>
+          <li>IBM-style Forward Deployed Units for AI activation sprints</li>
+          <li>Offshore capability hubs for 24hr delivery coverage</li>
+          <li>Specialist AI ethics / compliance consultants (project-based)</li>
+        </ul>
+      </div>
+      <div class="matrix-cell">
+        <h4 style="color:#f472b6">GOVERN (People Risk)</h4>
+        <ul>
+          <li>Shadow AI: engineers using unapproved AI tools — map and channel, don't ban</li>
+          <li>Misclassification risk: contractors treated as FTEs — legal exposure</li>
+          <li>AI anxiety: transparent communication > mandate + enforce</li>
+          <li>Skill depreciation rate now outpaces traditional L&D cycles — restructure L&D</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);">
+      <div class="callout-header" style="color:#f472b6">🏆 SPC Authority Point</div>
+      <p style="color:rgba(244,114,182,0.85);">Most SAFe implementations stall not on framework mechanics but on <strong>people readiness</strong>. The SPC who can diagnose cognitive load at team level — using DORA archetypes, AI anxiety signals, and skills gap mapping — and prescribe a specific BUILD/BUY/BORROW response is operating at a different altitude than one who redesigns ceremonies. People is where transformations succeed or die. Own this domain.</p>
+    </div>
+  </div>
+
+    <hr class="divider">
+    <div class="section">
+      <div class="s-label" style="color:#22d3ee">Decentralised Edge · People</div>
+      <div class="s-title">Building culture and capability across geographies</div>
+      <div class="grid-2">
+        <div class="card" style="border-left:3px solid #22d3ee">
+          <h3>Culture Is the Hardest Transfer</h3>
+          <ul>
+            <li>State of Devs 2025: over 30% of respondents cited culture as their primary workplace difficulty. For distributed teams, cultural misalignment is the leading cause of attrition and delivery failure.</li>
+            <li>Treat offshore teams as insiders, not vendors. Shared onboarding, company values, team rituals — the more they feel like insiders, the better they perform</li>
+            <li>Rotating meeting times: share the pain of inconvenient hours. One region permanently on early morning / late night calls signals their work is less valued</li>
+            <li>Recorded demo days: async-first with live Q&A option. Engineers share what they built — across all sites, not just onshore</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left:3px solid #22d3ee">
+          <h3>AI Champions in Distributed Pods</h3>
+          <ul>
+            <li>Each distributed pod needs an AI Champion — a peer advocate, not a manager — who drives local AI tool adoption and surfaces adoption barriers to the centre</li>
+            <li>AI literacy programs must be delivered in-flow and timezone-appropriate. A mandatory 9am AEST training session is not accessible to an India team</li>
+            <li>Skills taxonomy over role taxonomy: distributed pods hired for specific capability clusters, not job titles — enables precise capacity matching across geographies</li>
+            <li>45% of remote workers report isolation. Team wellbeing tracking (SPACE framework) must include distributed-specific signals, not just co-located proxies</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PANEL 6 · ARCHITECTURE BLUEPRINT
+═══════════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-architecture">
+<div class="container">
+
+  <div class="section">
+    <div class="s-label" style="color:#fb923c">Blueprint 06</div>
+    <div class="s-title">Architecture Blueprint</div>
+    <p class="s-intro">
+      Architecture is the SPC's most powerful tool for reducing dependency surface area permanently. Every team coupling problem, every PI planning blocker, every cross-ART negotiation is ultimately an architectural symptom. The SPC who understands domain boundaries, communication patterns, and the current architecture decision landscape operates at a level above the coordination layer.
+    </p>
+  </div>
+
+  <div class="section">
+    <div class="s-label" style="color:#fb923c">Pattern Landscape 2026</div>
+    <div class="s-title">Seven enterprise architecture patterns — when each applies</div>
+    <table class="bp-table">
+      <thead>
+        <tr><th>Pattern</th><th>Best fit</th><th>Key trade-off</th><th>SAFe / Team Topologies alignment</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="td-primary">Modular Monolith</span>Single deployable, logical modules, clear boundaries</td>
+          <td>Small–medium teams, single domain, early-stage product</td>
+          <td>Simpler ops; harder to scale teams independently</td>
+          <td>One stream-aligned team. No platform team needed yet.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Microservices</span>Independently deployable services, domain-bounded</td>
+          <td>50+ engineers, multiple autonomous teams, clear domain boundaries</td>
+          <td>Team autonomy; multiplies observability complexity significantly</td>
+          <td>One service ≈ one team. Enables true Team Topologies stream alignment.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Event-Driven Architecture</span>Async event streams, producers/consumers decoupled</td>
+          <td>High-volume, real-time, loose coupling between services required</td>
+          <td>Throughput and resilience; debugging across event chains is hard</td>
+          <td>Reduces team-to-team synchronous dependency. Ideal for distributed ARTs.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Domain-Driven Design (DDD)</span>Bounded contexts, ubiquitous language, context maps</td>
+          <td>Complex business domains with conflicting terminology across teams</td>
+          <td>Architectural clarity; significant upfront modelling investment</td>
+          <td>Bounded context = ART boundary candidate. Reduces cross-ART coupling structurally.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">API-First</span>Contract-first design; interfaces defined before implementation</td>
+          <td>Integration-heavy systems, partner ecosystems, multi-channel</td>
+          <td>Parallel development; contract versioning complexity at scale</td>
+          <td>Enables teams to work in parallel. Reduces dependency wait time in PI.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Serverless</span>Function-level execution; infrastructure abstracted by provider</td>
+          <td>Variable workloads, event-triggered processing, cost-sensitive</td>
+          <td>Elastic cost scaling; cold start latency and vendor lock-in risk</td>
+          <td>Reduces platform team burden for specific workloads. FinOps-friendly.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Strangler Fig Migration</span>Incremental replacement of monolith functionality</td>
+          <td>Legacy modernisation — migrate without big-bang rewrite</td>
+          <td>Risk-managed migration; sustained investment over multiple PIs</td>
+          <td>Maps directly to SAFe enabler epics. Classic SADL multi-PI dependency management case.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="s-label" style="color:#fb923c">Event-Driven Deep Dive</div>
+    <div class="s-title">EDA — the SPC must understand this at depth</div>
+    <p class="s-intro">Event-Driven Architecture is the most consequential pattern for reducing cross-team dependencies at scale. It deserves SPC attention beyond awareness level.</p>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Core EDA Patterns</h3>
+        <ul>
+          <li><strong>Pub/Sub:</strong> Producer emits event; all subscribers react. No direct coupling.</li>
+          <li><strong>Event Sourcing:</strong> State as immutable event log. Replay for auditability. High value in regulated domains.</li>
+          <li><strong>CQRS:</strong> Command (write) and Query (read) models separated. Enables independent scaling.</li>
+          <li><strong>Saga Pattern:</strong> Distributed transactions managed as sequence of events — replaces two-phase commits.</li>
+          <li><strong>Dead Letter Queue:</strong> Catches failed events. Without it, one bad event stalls a subscription permanently.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>EDA Failure Modes to Diagnose</h3>
+        <ul>
+          <li>Backlog accumulation with no visible symptoms — consumers fall behind silently</li>
+          <li>No distributed tracing — debugging a cross-service bug becomes a multi-hour investigation</li>
+          <li>Non-idempotent consumers — duplicate event delivery causes data corruption</li>
+          <li>Strict global ordering assumed — most brokers only offer partition-level ordering</li>
+          <li>Event schema changes unmanaged — breaks downstream consumers across ARTs</li>
+          <li>No event portal / governance — teams publish events without shared contract</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="s-label" style="color:#fb923c">Architecture Runway</div>
+    <div class="s-title">Keeping architecture ahead of delivery — the SAFe model</div>
+    <div class="flow">
+      <div class="flow-node">
+        <div class="fn-icon">🗺️</div>
+        <div class="fn-label">Strategic Vision</div>
+        <div class="fn-sub">Business capability map</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="fn-icon">✂️</div>
+        <div class="fn-label">Domain Decomp</div>
+        <div class="fn-sub">DDD bounded contexts</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="fn-icon">📐</div>
+        <div class="fn-label">Architecture Runway</div>
+        <div class="fn-sub">Enabler stories in backlog</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="fn-icon">🔁</div>
+        <div class="fn-label">Weekly Arch Sync</div>
+        <div class="fn-sub">Emergent design dialogue</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="fn-icon">⚡</div>
+        <div class="fn-label">Team Delivery</div>
+        <div class="fn-sub">Within guardrails</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="fn-icon">📊</div>
+        <div class="fn-label">Tech Debt Review</div>
+        <div class="fn-sub">IP week / Hardening</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Architecture Runway Principles</h3>
+        <ul>
+          <li>Runway stays 1–2 PIs ahead of feature delivery — never behind</li>
+          <li>Enabler epics funded separately from business epics (lean budget guardrails)</li>
+          <li>Weekly Architecture Sync: 60 min, System Architect + Lead Engineers only</li>
+          <li>Architectural decisions documented as Architecture Decision Records (ADRs)</li>
+          <li>Tech debt tracked in PI backlog — not an invisible tax on velocity</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Conway's Law — the SPC's structural diagnosis tool</h3>
+        <ul>
+          <li>"Systems mirror the communication structures of the organisations that build them"</li>
+          <li>If teams are constantly blocked by each other → architecture is too coupled</li>
+          <li>Cross-ART dependencies that repeat PI over PI → bounded context problem, not coordination problem</li>
+          <li>Fix: redesign team boundaries to match domain boundaries, not org chart</li>
+          <li>Team Topologies is the method; DDD is the domain language; SAFe is the coordination model</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="s-label" style="color:#fb923c">AI Architecture</div>
+    <div class="s-title">Architecting for AI — the new layer every SPC must understand</div>
+    <div class="grid-3">
+      <div class="card" style="border-top:2px solid #fb923c">
+        <div class="card-icon">🔄</div>
+        <h3>AI System Architecture</h3>
+        <p>End-to-end: data → model development → evaluation → deployment → monitoring. Every stage has architectural decisions that compound downstream.</p>
+        <ul>
+          <li>Build vs. buy: model hosting, vector search, feature stores</li>
+          <li>MLOps / LLMOps: CI/CD for models and prompts, not just code</li>
+          <li>Inference cost architecture: at-scale AI inference is a significant FinOps concern</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:2px solid #fb923c">
+        <div class="card-icon">🤖</div>
+        <h3>Agentic Architecture</h3>
+        <p>Multi-agent systems require explicit orchestration architecture. Agents have failure modes: stalled tasks, non-idempotent actions, escalation loops. Design for them.</p>
+        <ul>
+          <li>Human-in-the-loop: defined intervention points, not ad hoc</li>
+          <li>Agent2Agent (A2A) protocol: emerging standard for agent interop</li>
+          <li>Model Context Protocol (MCP): standardising tool access for agents</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:2px solid #fb923c">
+        <div class="card-icon">🛡️</div>
+        <h3>Responsible AI Architecture</h3>
+        <p>Privacy-by-design, bias assessment, explainability, and audit trails are now architectural requirements — not compliance add-ons.</p>
+        <ul>
+          <li>Data residency and access controls in the architecture, not the runbook</li>
+          <li>Prompt injection defence: architecture-level, not just review</li>
+          <li>Model audit trails: what model, what version, what prompt, what output</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="background:rgba(251,146,60,0.08);border:1px solid rgba(251,146,60,0.2);">
+      <div class="callout-header" style="color:#fb923c">🏆 SPC Authority Point</div>
+      <p style="color:rgba(251,200,140,0.85);">Gartner: only <strong>1 in 5 AI initiatives achieve ROI</strong>, and just 1 in 50 deliver true transformation. The primary failure cause is not model quality — it's weak architecture around data, governance, deployment, observability, and change management. The SPC who can diagnose architectural AI failure is a rare and high-value practitioner. The question to ask in every AI engagement: "What does your data → model → deployment → monitoring pipeline look like?" Most clients don't have an answer.</p>
+    </div>
+  </div>
+
+    <hr class="divider">
+    <div class="section">
+      <div class="s-label" style="color:#22d3ee">Decentralised Edge · Architecture</div>
+      <div class="s-title">Architecture is the long-term fix for distributed dependency problems</div>
+      <div class="grid-2">
+        <div class="card" style="border-left:3px solid #22d3ee">
+          <h3>Conway's Law in Distributed Teams</h3>
+          <ul>
+            <li>Systems mirror the communication structures of the organisations that build them. In distributed teams, poor architecture produces cross-timezone dependencies that no coordination model can fix</li>
+            <li>Domain boundaries must align with team geography: each distributed pod owns a distinct bounded context — not a slice of every feature</li>
+            <li>Event-Driven Architecture is particularly powerful for distributed teams: async event streams remove the need for synchronous cross-team calls</li>
+            <li>API-first contracts enable parallel development across timezones — teams can build against a stable contract without waiting for the other side to finish</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left:3px solid #22d3ee">
+          <h3>Platform Engineering Removes Coordination Need</h3>
+          <ul>
+            <li>A mature IDP is the single highest-leverage investment for distributed teams: self-service provisioning means offshore engineers don't wait on timezone-gated approvals</li>
+            <li>Golden paths must work in every timezone — environment setup, CI/CD, deployment all self-service. A tool that requires a Slack message to an AEST engineer is not a golden path</li>
+            <li>Reproducible dev environments (like Shopify's "dev" tool): identical local environment regardless of geography eliminates "works on my machine" cross-timezone debugging</li>
+            <li>Observability tooling must be self-service: distributed engineers should be able to diagnose production issues without waking up a different timezone</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PANEL 7 · AI VALUE BLUEPRINT
+═══════════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-aivalue">
+<div class="container">
+
+  <div class="section">
+    <div class="s-label" style="color:#a78bfa">Blueprint 07</div>
+    <div class="s-title">AI Value Blueprint</div>
+    <p class="s-intro">
+      AI value is the hardest problem in enterprise delivery right now. Individual productivity gains are real but organisational delivery metrics stay flat — the DORA 2025 "AI Productivity Paradox." The SPC who can diagnose <em>why</em> and prescribe <em>how</em> to close that gap is the practitioner every CTO and CDO needs in 2026.
+    </p>
+  </div>
+
+  <div class="section">
+    <div class="s-label" style="color:#a78bfa">The Core Problem</div>
+    <div class="s-title">The AI Productivity Paradox — and why it matters</div>
+    <div class="callout" style="background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.25);">
+      <div class="callout-header" style="color:#a78bfa">⚠️ DORA 2025 Finding — The Paradox</div>
+      <p style="color:rgba(200,185,255,0.85);">AI coding assistants produce <strong>21% more tasks completed</strong> and <strong>98% more pull requests merged</strong> at individual level — but <strong>organisational delivery metrics stay flat</strong>. More PRs, same lead time. More tasks, same deployment frequency. Individual output up; team throughput unchanged.</p>
+      <p style="color:rgba(200,185,255,0.85);">The reason: developers using AI interact with <strong>67% more PR contexts</strong> and <strong>18% more task contexts</strong> daily. Work restarts are up 14%. Stalled in-progress tasks up 26%. AI accelerates starting work — not finishing it. The bottleneck moved; it wasn't removed.</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Why the Paradox Happens</h3>
+        <ul>
+          <li>AI boosts individual output but doesn't fix team coordination overhead</li>
+          <li>More code generated = more review burden on the same humans</li>
+          <li>AI amplifies whatever it touches — dysfunctional review processes get worse</li>
+          <li>Deployment pipeline bottlenecks exist regardless of how fast code is written</li>
+          <li>Architecture coupling limits independent deployment even with faster coding</li>
+          <li>Rework rate increases if AI-generated code isn't validated before merge</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>How to Break the Paradox</h3>
+        <ul>
+          <li>Measure at team level, not individual: DORA metrics, not PR count</li>
+          <li>Fix review bottlenecks before adding AI — don't amplify the constraint</li>
+          <li>Loosen architecture coupling: parallel deployment requires independent boundaries</li>
+          <li>AI in the deployment pipeline, not just the IDE: automate testing and review gates</li>
+          <li>Define human-AI handoff points explicitly — not left to each engineer's judgment</li>
+          <li>Kill work in progress limits: AI generates faster than humans can absorb</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="s-label" style="color:#a78bfa">The AI Value Architect Role</div>
+    <div class="s-title">The new role AI-Native SAFe created — and what it actually does</div>
+    <div class="grid-3">
+      <div class="card" style="border-top:2px solid #a78bfa">
+        <div class="card-icon">🎯</div>
+        <h3>Outcome Navigation</h3>
+        <p>Guides teams from AI feature delivery (output) to measurable business outcome. Defines hypothesis, success metric, and kill criteria before any AI investment is made.</p>
+        <ul>
+          <li>Owns the AI OKR: outcome hypothesis + measurement method</li>
+          <li>Signs off on AI feature acceptance — did it move the measure?</li>
+          <li>Stops "AI" as a PI objective — it's not an outcome</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:2px solid #a78bfa">
+        <div class="card-icon">⚖️</div>
+        <h3>Ethics + Risk Gateway</h3>
+        <p>First-line governance for AI ethics, legal risk, and safety — embedded in the team's workflow, not delegated to Legal at the end of a sprint.</p>
+        <ul>
+          <li>Bias assessment: required before any model goes to prod</li>
+          <li>Explainability: can the team describe why the model made a decision?</li>
+          <li>Regulatory radar: tracks evolving AI law applicable to the value stream</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:2px solid #a78bfa">
+        <div class="card-icon">💰</div>
+        <h3>ROI Governance</h3>
+        <p>Tracks the actual return on AI investment at value stream level — not tool adoption rate. Reports to LPM in outcome language, not feature language.</p>
+        <ul>
+          <li>AI investment vs. DORA metric movement: the real ROI equation</li>
+          <li>Pilot → production decision gate: time-boxed with kill criteria honoured</li>
+          <li>Inference cost tracking: AI at scale is expensive — FinOps integration required</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="s-label" style="color:#a78bfa">AI Maturity Model</div>
+    <div class="s-title">Where your organisation is — and what the next move is</div>
+    <table class="bp-table">
+      <thead>
+        <tr><th>Stage</th><th>Characteristics</th><th>Delivery signal</th><th>SPC intervention</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="td-primary">1 · Pilot</span>Isolated experiments, no governance</td>
+          <td>AI tools adopted by enthusiasts. No measurement. No standards.</td>
+          <td>Individual PRs up; team throughput flat (the Paradox)</td>
+          <td>Establish measurement baseline. Define outcome hypotheses. Create AI Value Architect role.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">2 · Governed</span>Tools standardised, guardrails in place</td>
+          <td>AI in golden path. Ethics review embedded. ROI tracked.</td>
+          <td>DORA metrics beginning to move. Rework rate measurable.</td>
+          <td>Extend AI into CI/CD pipeline. Instrument team-level metrics. Connect to LPM funding.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">3 · Augmented</span>AI in delivery workflow end-to-end</td>
+          <td>AI in planning, coding, testing, deployment, monitoring. Human handoffs designed.</td>
+          <td>Deployment frequency up. Lead time falling. Quality stable or improving.</td>
+          <td>Redesign team topology for AI-native workflows. Redefine team capacity model.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">4 · AI-Native</span>Operating model architected around AI</td>
+          <td>Smaller AI-augmented teams. Agentic workflows. Outcomes at centre.</td>
+          <td>Multiple daily deployments. 3.5× throughput vs. Stage 1. Elite DORA archetype.</td>
+          <td>Portfolio-level AI strategy. AI ROI reporting to C-suite. Expand to adjacent value streams.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="s-label" style="color:#a78bfa">Seven AI Capabilities</div>
+    <div class="s-title">DORA 2025's AI Capabilities Model — the SPC diagnostic tool</div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-icon">🏗️</div>
+        <h3>1. Technical Foundation</h3>
+        <p>Automation, platform engineering, CI/CD maturity. AI on bad pipelines amplifies problems. Fix the foundation first.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🧪</div>
+        <h3>2. Experimentation Culture</h3>
+        <p>Safe-to-fail environment. Hypothesis-driven development. Kill criteria honoured. Pilots that don't scale are shut down, not perpetuated.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📊</div>
+        <h3>3. Data Quality</h3>
+        <p>AI is only as good as the data it's trained on and operates with. Legacy data architectures can't power real-time AI. Data governance is an AI prerequisite.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🛡️</div>
+        <h3>4. Risk Management</h3>
+        <p>Proactive identification of AI risks — model drift, bias, security vulnerabilities, regulatory exposure. Embedded in delivery, not post-launch.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">👥</div>
+        <h3>5. Human-AI Collaboration</h3>
+        <p>Explicit handoff design. Where does AI hand to human? What triggers human judgment? Teams that design this outperform those that leave it to individuals.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📏</div>
+        <h3>6. Measurement</h3>
+        <p>Team-level DORA metrics, not individual tool adoption. AI ROI measured in delivery performance, not licence utilisation. Rework Rate as the AI quality signal.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌍</div>
+        <h3>7. Responsible AI Culture</h3>
+        <p>Ethics as a team habit, not a compliance checkpoint. Psychological safety to raise AI concerns. Oversight built into workflow, not bolted on after.</p>
+      </div>
+    </div>
+
+    <div class="callout" style="background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);">
+      <div class="callout-header" style="color:#a78bfa">🏆 SPC Authority Point</div>
+      <p style="color:rgba(200,185,255,0.85);">The SPC who can walk a client through the AI Maturity diagnostic — combining DORA 2025's seven capabilities with the AI Amplifier Effect and SAFe's new AI Value Architect role — is operating at the frontier of the profession. Most clients are at Stage 1 (pilot). Most consultants can only describe Stage 4. <strong>The value is in mapping the path from 1 to 2.</strong> That's the engagement. That's the authority. Start with measurement: what are your DORA metrics today? Most clients don't know. That's the opening.</p>
+    </div>
+  </div>
+
+    <hr class="divider">
+    <div class="section">
+      <div class="s-label" style="color:#22d3ee">Decentralised Edge · AI Value</div>
+      <div class="s-title">AI amplifies distributed delivery — in both directions</div>
+      <div class="grid-2">
+        <div class="card" style="border-left:3px solid #22d3ee">
+          <h3>AI as the Timezone Bridge</h3>
+          <ul>
+            <li>AI coding assistants reduce the cost of context-switching across handoffs — engineers pick up where the previous timezone left off with AI-generated context summaries</li>
+            <li>AI-generated documentation and decision records fill the async communication gap: what used to require a standup now travels in a structured artifact</li>
+            <li>AI dependency risk scanning across the ART backlog can run continuously — not just at BRP — giving distributed SADLs real-time visibility without a ceremony</li>
+            <li>AI OKR forecasting: with distributed teams running 24-hr cycles, mid-PI surprises arrive faster. AI early warning gives the SADL response time before it becomes a crisis</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left:3px solid #22d3ee">
+          <h3>Distributed AI Risk — The Amplifier Warning</h3>
+          <ul>
+            <li>DORA 2025 AI Amplifier Effect: AI magnifies existing conditions. Distributed teams with weak async discipline + AI = faster miscommunication at scale</li>
+            <li>AI-generated code reviewed across timezones: review lag means stalled PRs and increasing WIP — directly worsening the AI Productivity Paradox</li>
+            <li>Shadow AI spreads faster in distributed environments — governance must precede adoption, not follow the breach</li>
+            <li>Human-AI handoff points must be explicit in distributed workflows — ambiguous handoffs in co-located teams are bad; across timezones they are invisible until they fail</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PANEL 8 · METRICS BLUEPRINT
+═══════════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-metrics">
+<div class="container">
+
+  <div class="section">
+    <div class="s-label" style="color:#34d399">Blueprint 08</div>
+    <div class="s-title">Metrics Blueprint</div>
+    <p class="s-intro">
+      Measurement is the SPC's authority anchor. You cannot improve what you cannot see, and you cannot convince executives what you cannot quantify. This blueprint covers the complete 2026 metrics stack: DORA 5, SPACE, flow metrics, AI metrics, business outcomes — and critically, how to connect delivery performance to C-suite language.
+    </p>
+  </div>
+
+  <div class="section">
+    <div class="s-label" style="color:#34d399">Full Metrics Stack</div>
+    <div class="s-title">Four measurement layers — each serving a different audience</div>
+    <div class="grid-2">
+      <div class="card" style="border-top:2px solid #34d399">
+        <div class="card-icon">📐</div>
+        <h3>Layer 1 · DORA 5 (Team Performance)</h3>
+        <p>The gold standard for software delivery measurement. Five metrics covering throughput and stability. Audience: Engineering leadership, RTEs, SADLs.</p>
+        <ul>
+          <li><strong>Deployment Frequency</strong> — how often to prod</li>
+          <li><strong>Lead Time for Changes</strong> — commit to live</li>
+          <li><strong>Change Failure Rate</strong> — % deployments causing incidents</li>
+          <li><strong>Failed Deployment Recovery Time</strong> — time to restore</li>
+          <li><strong>Rework Rate (new 2025)</strong> — reactive vs. planned work ratio</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:2px solid #6c8fff">
+        <div class="card-icon">🔬</div>
+        <h3>Layer 2 · SPACE (Developer Experience)</h3>
+        <p>Satisfaction, Performance, Activity, Communication, Efficiency. Captures the human dimension DORA misses. Audience: Engineering managers, Agile coaches, People teams.</p>
+        <ul>
+          <li><strong>Satisfaction:</strong> developer NPS, engagement, retention signal</li>
+          <li><strong>Performance:</strong> quality of outcomes, not output volume</li>
+          <li><strong>Activity:</strong> volume of actions (used carefully — not a productivity proxy)</li>
+          <li><strong>Communication:</strong> discovery, onboarding, integration quality</li>
+          <li><strong>Efficiency:</strong> flow, minimal interruptions, handoff quality</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:2px solid #fb923c">
+        <div class="card-icon">🌊</div>
+        <h3>Layer 3 · Flow Metrics (SAFe PI Level)</h3>
+        <p>Mik Kersten's Flow Framework — connects engineering work to business outcomes. Audience: SADLs, RTEs, Product Managers, LPM.</p>
+        <ul>
+          <li><strong>Flow Velocity:</strong> business items completed per time period</li>
+          <li><strong>Flow Efficiency:</strong> active time vs. wait time in value stream</li>
+          <li><strong>Flow Time:</strong> end-to-end elapsed time from feature start to value delivery</li>
+          <li><strong>Flow Load:</strong> WIP — items in progress vs. completed</li>
+          <li><strong>Flow Distribution:</strong> mix of features, defects, debt, risk across PI</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:2px solid #f472b6">
+        <div class="card-icon">📈</div>
+        <h3>Layer 4 · Business Outcomes (C-Suite)</h3>
+        <p>Connects delivery to P&L. The language of the executive sponsor. Audience: CFO, CEO, Business Owners, Board.</p>
+        <ul>
+          <li><strong>Time-to-Market:</strong> lead time in weeks/months — competitive framing</li>
+          <li><strong>Cost of Delay:</strong> WSJF's economic signal — delayed feature = $ lost</li>
+          <li><strong>PI Predictability:</strong> % committed features delivered — budget confidence</li>
+          <li><strong>Value per $:</strong> OKR actuals vs. PI spend — portfolio ROI</li>
+          <li><strong>AI ROI:</strong> DORA movement per $ of AI investment</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="s-label" style="color:#34d399">DORA 2025 Archetypes</div>
+    <div class="s-title">Seven team archetypes — replace the old four-tier model</div>
+    <p class="s-intro">DORA 2025 replaced Low/Medium/High/Elite with seven archetypes that combine delivery performance, stability, and team wellbeing. Two teams can have the same DORA scores for completely different reasons. The archetype reveals the why.</p>
+    <table class="bp-table">
+      <thead>
+        <tr><th>Archetype signal</th><th>Delivery pattern</th><th>Wellbeing pattern</th><th>SPC prescription</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="td-primary">High Throughput, High Stability</span>The healthy elite</td>
+          <td>High deploy frequency, low CFR, fast recovery</td>
+          <td>Sustainable pace, high satisfaction</td>
+          <td>Protect the conditions. Don't inject scope. Study the practices and replicate.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">High Throughput, Low Stability</span>Burning bright</td>
+          <td>High deploy frequency but high CFR and slow recovery</td>
+          <td>Often high stress, risk of burnout</td>
+          <td>Slow down releases. Invest in automated testing. This team is heading for an incident.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Low Throughput, High Quality</span>The careful team</td>
+          <td>Low deploy frequency but very low CFR</td>
+          <td>Often comfortable but risk-averse</td>
+          <td>Challenge the batch size. Trunk-based development. Small, safe releases accelerate, not risk.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">High Rework Rate</span>Planning failure signal</td>
+          <td>High proportion of unplanned reactive work</td>
+          <td>Interruption-heavy, low focus time</td>
+          <td>This is a PI planning signal. Features weren't INVEST-ready. Fix BRP input quality first.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">High Cognitive Load</span>Platform failure signal</td>
+          <td>Long lead times, low throughput despite effort</td>
+          <td>High stress, frequent escalations</td>
+          <td>Platform team maturity issue. Engineers doing infra work. IDP investment needed urgently.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">AI Paradox</span>AI adoption without org change</td>
+          <td>Individual metrics up; team DORA metrics flat</td>
+          <td>Mixed — individual excitement, team frustration</td>
+          <td>Fix the pipeline, the review process, the architecture coupling. AI amplifies the bottleneck.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Sustainable High Performer</span>AI-Native SAFe target state</td>
+          <td>All five DORA metrics in elite range</td>
+          <td>High satisfaction, low burnout, strong psychological safety</td>
+          <td>This is the target. Document what got you here. Replicate the conditions, not just the practices.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="s-label" style="color:#34d399">PI Metrics Dashboard</div>
+    <div class="s-title">What the SADL tracks — and reports to whom</div>
+    <table class="bp-table">
+      <thead>
+        <tr><th>Metric</th><th>Target</th><th>Reported to</th><th>Cadence</th><th>Action trigger</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="td-primary">PI Predictability</span>Features delivered vs. committed</td>
+          <td>&gt;85%</td>
+          <td>LPM, Business Owners, Finance</td>
+          <td>PI close</td>
+          <td>&lt;70% triggers root cause review before next BRP</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Unplanned Injection Rate</span>Scope added post-BRP</td>
+          <td>&lt;10%</td>
+          <td>SADL / RTE, Product Management</td>
+          <td>Weekly</td>
+          <td>&gt;15% triggers intake process review with explicit trade-off decision</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Dependency Resolution Rate</span>Dependencies resolved before impact</td>
+          <td>100% pre-BRP</td>
+          <td>SADL, cross-ART leads</td>
+          <td>Weekly / BRP gate</td>
+          <td>Any unresolved cross-ART dependency entering Week 1 = escalation</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Deployment Frequency</span>Releases to prod per sprint</td>
+          <td>Daily or better</td>
+          <td>Engineering leadership</td>
+          <td>Continuous</td>
+          <td>Frequency drop triggers pipeline and architecture review</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Rework Rate</span>Reactive vs. planned work</td>
+          <td>&lt;10%</td>
+          <td>SADL, Product Managers</td>
+          <td>Sprint close</td>
+          <td>&gt;20% = feature readiness problem at BRP. Review INVEST gate.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Flow Efficiency</span>Active time vs. wait time</td>
+          <td>&gt;40%</td>
+          <td>SADL, Value Stream mapping</td>
+          <td>Mid-PI</td>
+          <td>&lt;25% = significant queue or handoff problem. Map the waste.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Developer NPS (SPACE)</span>Team satisfaction signal</td>
+          <td>&gt;50 NPS</td>
+          <td>Engineering leadership, People team</td>
+          <td>Quarterly</td>
+          <td>Declining NPS predicts attrition and delivery degradation 1–2 quarters ahead</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">AI ROI Index</span>DORA movement per $ AI investment</td>
+          <td>Improving trend</td>
+          <td>LPM, CTO, CFO</td>
+          <td>PI close</td>
+          <td>Flat or declining = AI Paradox diagnosis needed. Fix foundations before adding tools.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout" style="background:rgba(52,211,153,0.07);border:1px solid rgba(52,211,153,0.2);">
+      <div class="callout-header" style="color:#34d399">🏆 SPC Authority Point</div>
+      <p style="color:rgba(52,211,153,0.85);">The metrics authority move is not knowing all the metrics — it's knowing <strong>which metric to look at first</strong> in any given diagnostic situation, and what it implies about root cause. A high Rework Rate points to BRP readiness. High Cognitive Load points to platform investment. Flat DORA with AI tools points to the Paradox. Declining NPS precedes delivery degradation. <strong>This causal chain knowledge is the consulting differentiator.</strong> Anyone can build a dashboard. Only an SPC at authority level can read it diagnostically and prescribe correctly.</p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+
+<!-- FOOTER -->
+<div class="footer">
+  <div><strong>SPC Authority Blueprints · 2026</strong> — Delivery · Governance · Dependency · Funding</div>
+  <div>Sources: AI-Native SAFe (23 Jun 2026) · DORA 2025 · Team Topologies · PRIME Model · Platform Engineering research 2025–26</div>
+</div>
+
+<script>
+  // Tab switching
+  const btns = document.querySelectorAll('.nav-btn');
+  const panels = document.querySelectorAll('.panel');
+
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.panel;
+      btns.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-' + target)?.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // Checkbox persistence
+  document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    const key = 'bp-' + cb.id;
+    if (localStorage.getItem(key) === 'true') cb.checked = true;
+    cb.addEventListener('change', () => localStorage.setItem(key, cb.checked));
+  });
+</script>
+</body>
+</html>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PANEL 9 · CASE STUDIES WIKI
+═══════════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-casestudies">
+<div class="container">
+
+  <div class="section">
+    <div class="s-label" style="color:#fbbf24">Blueprint 09</div>
+    <div class="s-title">Case Studies Wiki</div>
+    <p class="s-intro">
+      The world's most studied delivery transformations — examined not as inspiration but as <strong>diagnostic evidence</strong>. For each case, the SPC question is: what structural conditions made this work, what failed, and what is the transferable principle? Copying the label is the most common mistake. Understanding the mechanism is the authority move.
+    </p>
+  </div>
+
+  <!-- CASE STUDY 1: SPOTIFY -->
+  <div class="section">
+    <div class="s-label" style="color:#fbbf24">Case Study 01</div>
+    <div class="s-title" style="display:flex;align-items:center;gap:12px">
+      <span style="font-size:28px">🎵</span> Spotify — The Model That Reshaped an Industry
+    </div>
+
+    <div class="signal-strip">
+      <div class="signal-cell"><div class="signal-value" style="color:#fbbf24">2012</div><div class="signal-label">Original whitepaper published — 250 engineers, 3 cities</div></div>
+      <div class="signal-cell"><div class="signal-value" style="color:#fbbf24">6–12</div><div class="signal-label">Squad size — cross-functional, autonomous, mission-led</div></div>
+      <div class="signal-cell"><div class="signal-value" style="color:#fbbf24">&lt;150</div><div class="signal-label">Tribe size ceiling — Dunbar's Number applied deliberately</div></div>
+      <div class="signal-cell"><div class="signal-value" style="color:#fbbf24">100+</div><div class="signal-label">Distinct systems in the Spotify product at scale</div></div>
+      <div class="signal-cell"><div class="signal-value" style="color:#fbbf24">≠</div><div class="signal-label">Spotify no longer uses the model as originally described</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card" style="border-left:3px solid #fbbf24">
+        <h3>What Actually Worked</h3>
+        <ul>
+          <li><strong>Squad autonomy with mission clarity</strong> — each squad had a written purpose and a way to measure customer impact. Not just autonomy; autonomy with direction.</li>
+          <li><strong>Chapters solved the matrix problem</strong> — functional expertise (backend, QA, UX) maintained across squads without creating functional silos</li>
+          <li><strong>Guilds spread practice organically</strong> — voluntary communities of interest cross-pollinated standards without mandates</li>
+          <li><strong>Tribe size discipline</strong> — keeping tribes under 150 people maintained informal coordination. Growth beyond this required structural response</li>
+          <li><strong>Health checks as a continuous signal</strong> — Spotify Health Check provided team-level data the SADL/Tribe Lead could act on</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:3px solid #ff5555">
+        <h3>What Failed — The Honest Version</h3>
+        <ul>
+          <li><strong>Tribes became empires</strong> — as Spotify grew, tribes expanded beyond 150 and became silos. Cross-tribe coordination proved as hard as the functional silos the model replaced</li>
+          <li><strong>Guilds lost effectiveness at scale</strong> — voluntary participation meant the people who most needed to show up (senior engineers) were often too busy to attend</li>
+          <li><strong>Chapter leads stretched thin</strong> — serving as peer in own squad and manager of people in other squads created role tension that didn't scale</li>
+          <li><strong>Autonomy without technical discipline = fragmentation</strong> — teams made independent technology choices that produced incompatible systems expensive to maintain</li>
+          <li><strong>Most implementations copied the labels, not the conditions</strong> — 2012 Spotify was 250 people in a homogeneous engineering culture. That context didn't transfer.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);">
+      <div class="callout-header" style="color:#fbbf24">🏆 SPC Transferable Principles</div>
+      <p style="color:rgba(251,200,140,0.85);">What to take from Spotify: <strong>cross-functional squad ownership + mission clarity + communities of practice + tribe size discipline.</strong> What to leave: the labels. The modern synthesis is Spotify principles + Team Topologies structure + platform engineering + OKRs. The 2026 practice is "adapted Spotify" — not the 2012 snapshot. Kniberg himself said it was never meant to be copied: <em>"This is not a recipe. It is a snapshot of what we are doing right now."</em> The SPC who understands this distinction avoids the most common agile transformation failure mode.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- CASE STUDY 2: ING BANK -->
+  <div class="section">
+    <div class="s-label" style="color:#fbbf24">Case Study 02</div>
+    <div class="s-title" style="display:flex;align-items:center;gap:12px">
+      <span style="font-size:28px">🏦</span> ING Bank Netherlands — Teaching an Elephant to Race
+    </div>
+
+    <div class="signal-strip">
+      <div class="signal-cell"><div class="signal-value" style="color:#fbbf24">3,500</div><div class="signal-label">Employees restructured into squads and tribes — 2015</div></div>
+      <div class="signal-cell"><div class="signal-value" style="color:#fbbf24">350</div><div class="signal-label">Nine-person squads across 13 tribes at full implementation</div></div>
+      <div class="signal-cell"><div class="signal-value" style="color:#fbbf24">2→3wk</div><div class="signal-label">Release frequency: from 5–6 big launches/year to bi-weekly</div></div>
+      <div class="signal-cell"><div class="signal-value" style="color:#fbbf24">600</div><div class="signal-label">Monthly CDaaS apps in production post-agile (up from 280)</div></div>
+      <div class="signal-cell"><div class="signal-value" style="color:#fbbf24">#1</div><div class="signal-label">NPS ranking in Netherlands — beat Rabobank and ABN AMRO</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card" style="border-left:3px solid #fbbf24">
+        <h3>What Made ING Work</h3>
+        <ul>
+          <li><strong>Behavioural design, not just structural change</strong> — ING addressed psychological forces: anxiety about career growth (chapter leads), loss of status (outcomes over team size), connection to purpose (customer impact in call centres first week)</li>
+          <li><strong>End-to-end principle rigorously applied</strong> — squads included marketing, product, commercial, UX, data analysts, AND IT engineers. Not just dev teams renamed</li>
+          <li><strong>QBR as alignment mechanism</strong> — each tribe published quarterly achievements, learnings and next-quarter goals openly. Borrowed from Google/Netflix. Transparent across all tribes.</li>
+          <li><strong>Microservices architecture enabled squad independence</strong> — each squad owned a specific microservice, reducing deployment dependencies structurally</li>
+          <li><strong>SAFe elements for large-scale coordination</strong> — PI planning sessions aligned product owners and tribe leads on priorities across squads without sacrificing team agility</li>
+          <li><strong>Pilot before scale</strong> — started with 5–6 squads, built applied experience, then rolled out. Not a big-bang transformation.</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:3px solid #ff5555">
+        <h3>What ING Struggled With</h3>
+        <ul>
+          <li><strong>Squad member fatigue</strong> — two-week sprints at consistently high pace. Tribe leads flagged burnout risk as a structural challenge, not an individual failing</li>
+          <li><strong>Chapter lead role under-specified</strong> — role tension between peer and manager. When chapters didn't function well, squad skill development suffered and created inter-squad dependencies</li>
+          <li><strong>Support functions excluded</strong> — HR, finance, risk, and call centres initially excluded. Created friction at the boundary between agile and non-agile functions</li>
+          <li><strong>Scaling across borders</strong> — the Netherlands model (10 years of agile culture) was mismatched with group entities just beginning their agile journey. Cultural transfer harder than structural transfer</li>
+          <li><strong>Risk of new stasis</strong> — academics noted the risk of replacing one set of processes with "agile processes" — ceremony without genuine adaptability</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);">
+      <div class="callout-header" style="color:#fbbf24">🏆 SPC Transferable Principles</div>
+      <p style="color:rgba(251,200,140,0.85);">ING is the definitive proof that large-scale agile works in regulated, non-tech industries — when done with structural discipline and <strong>behavioural intentionality</strong>. The mechanism: cross-functional squad ownership + microservices architecture + QBR transparency + psychological safety investment. The SAFe lens: ING ran PI planning-equivalent QBRs before "PI planning" was the vocabulary. The SPC insight for financial services clients: compliance doesn't block agility — it requires embedding compliance champions in squads and automated compliance gates in CI/CD. ING proved this.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- CASE STUDY 3: NETFLIX -->
+  <div class="section">
+    <div class="s-label" style="color:#fbbf24">Case Study 03</div>
+    <div class="s-title" style="display:flex;align-items:center;gap:12px">
+      <span style="font-size:28px">🎬</span> Netflix — The Paved Road and Freedom & Responsibility
+    </div>
+
+    <div class="signal-strip">
+      <div class="signal-cell"><div class="signal-value" style="color:#fbbf24">Daily</div><div class="signal-label">Deployment frequency — hundreds of changes per day across teams</div></div>
+      <div class="signal-cell"><div class="signal-value" style="color:#fbbf24">150</div><div class="signal-label">Centralised platform team — developer productivity + delivery</div></div>
+      <div class="signal-cell"><div class="signal-value" style="color:#fbbf24">1→2min</div><div class="signal-label">Titus container deployments — down from tens of minutes</div></div>
+      <div class="signal-cell"><div class="signal-value" style="color:#fbbf24">2008</div><div class="signal-label">Migration from monolith to cloud microservices began — after DB crash</div></div>
+      <div class="signal-cell"><div class="signal-value" style="color:#fbbf24">≠copy</div><div class="signal-label">Autonomy was the end state — not the starting condition</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card" style="border-left:3px solid #fbbf24">
+        <h3>The Netflix Delivery Model — What Actually Makes It Work</h3>
+        <ul>
+          <li><strong>Paved Road philosophy</strong> — centralised teams build supported tools (Spinnaker CI/CD, Chaos Monkey, Backstage-equivalent). Engineers can deviate but take on full ownership of maintenance. Most don't deviate.</li>
+          <li><strong>Full-cycle developers (Operate What You Build)</strong> — engineers own build, deploy, operate, AND support. No handoff to ops. Eliminates the knowledge-transfer loss that plagued their 2012 model.</li>
+          <li><strong>Failure tolerance infrastructure FIRST</strong> — Chaos Monkey (random production termination) forced resilience. Autonomy to deploy was only safe because the system was designed to tolerate individual component failures</li>
+          <li><strong>Declarative delivery</strong> — Managed Delivery lets teams describe requirements (what, not how). Spinnaker determines the steps. Teams stay on the paved path without managing pipeline complexity.</li>
+          <li><strong>Developer experience as product</strong> — Platform team's explicit mission: "tools so compelling engineers adopt them voluntarily." Internal NPS tracked. Adoption campaigns run. Not mandated.</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:3px solid #ff5555">
+        <h3>What Netflix Teaches You NOT To Copy</h3>
+        <ul>
+          <li><strong>Don't copy the end state</strong> — Netflix's deployment autonomy took years of platform investment to make safe. Organisations that adopt "you build it, you run it" without the failure infrastructure produce chaos, not velocity</li>
+          <li><strong>Tool adoption requires internal marketing</strong> — even at Netflix, getting engineers to migrate to new tools is hard. "Our customers have day jobs" — the platform team explicitly runs campaigns and makes migrations seamless</li>
+          <li><strong>Freedom without responsibility is liability</strong> — the culture of freedom works because it is matched by accountability. Engineers own production incidents for their own services. No externalising blame.</li>
+          <li><strong>Platform investment is sustained, not a project</strong> — Netflix has been iterating on their developer platform since 2012. It is never "done." Treating it as a project produces a platform that teams abandon.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);">
+      <div class="callout-header" style="color:#fbbf24">🏆 SPC Transferable Principles</div>
+      <p style="color:rgba(251,200,140,0.85);">Netflix is the canonical Platform Engineering case study. The mechanism: <strong>paved roads (golden paths) + full-cycle ownership + failure tolerance architecture + developer experience as product.</strong> The SPC diagnostic question: "Can your teams deploy independently without coordinating with other teams?" If not, the constraint is architecture or platform maturity — not team autonomy. Netflix's lesson for every organisation: <strong>invest in failure tolerance before granting deployment freedom.</strong> The sequence matters. Most organisations get it backwards.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- COMPARISON TABLE -->
+  <div class="section">
+    <div class="s-label" style="color:#fbbf24">Synthesis</div>
+    <div class="s-title">Three models compared — the SPC diagnostic matrix</div>
+    <table class="bp-table">
+      <thead>
+        <tr><th>Dimension</th><th>🎵 Spotify</th><th>🏦 ING Bank</th><th>🎬 Netflix</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="td-primary">Primary model</span></td>
+          <td>Squad/Tribe/Chapter/Guild autonomy model</td>
+          <td>Spotify-inspired + SAFe PI planning + microservices</td>
+          <td>Platform engineering + full-cycle ownership + paved roads</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Key success mechanism</span></td>
+          <td>Mission clarity + community of practice</td>
+          <td>Behavioural design + end-to-end squad ownership</td>
+          <td>Failure tolerance infrastructure + developer experience as product</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Architecture foundation</span></td>
+          <td>Product-aligned services (implicit)</td>
+          <td>Microservices — one squad, one service ownership</td>
+          <td>Cloud-native microservices + chaos engineering from 2008</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Governance model</span></td>
+          <td>Tribe autonomy + Trio (tribe lead / product / design)</td>
+          <td>QBR transparency + PI planning + Orange Code values</td>
+          <td>Freedom and responsibility — engineers own what they build</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">What failed / stretched</span></td>
+          <td>Cross-tribe coordination, guild effectiveness, chapter lead dual role</td>
+          <td>Fatigue, chapter lead underspecification, cross-border cultural transfer</td>
+          <td>Tool adoption without mandate, maintaining paved road relevance at scale</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Applicability to SAFe orgs</span></td>
+          <td>Squad = Agile Team; Tribe = ART; Guild = Community of Practice</td>
+          <td>Direct analogue — QBR = PI; SAFe explicitly used at ING for large coordination</td>
+          <td>Platform team = SAFe Platform ART; Paved road = golden path for ART</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">SPC warning</span></td>
+          <td>Don't implement 2012 Spotify in 2026 — copy principles, not structure</td>
+          <td>Don't skip the behavioural change work — structural change without culture change produces vocabulary not transformation</td>
+          <td>Don't give teams deployment autonomy before building failure tolerance — sequence matters</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- WHAT TO ADD NEXT -->
+  <div class="section">
+    <div class="s-label" style="color:#fbbf24">Coming Next</div>
+    <div class="s-title">Case studies in the pipeline</div>
+    <div class="grid-3">
+      <div class="card" style="border-top:2px solid #fbbf24;opacity:0.7">
+        <div class="card-icon">🚗</div>
+        <h3>Amazon — Two-Pizza Teams</h3>
+        <p>The original autonomous team model. Service ownership, internal APIs as products, the "working backwards" press release method. Delivery through org design — not process.</p>
+      </div>
+      <div class="card" style="border-top:2px solid #fbbf24;opacity:0.7">
+        <div class="card-icon">🏪</div>
+        <h3>Shopify — Modular Monolith at Scale</h3>
+        <p>The deliberate counter-narrative to microservices. Shopify's "dev" tool: identical reproducible environments for every engineer. Platform team as product. Internal NPS measurement.</p>
+      </div>
+      <div class="card" style="border-top:2px solid #fbbf24;opacity:0.7">
+        <div class="card-icon">🎵</div>
+        <h3>Spotify (2026) — Backstage as IDP</h3>
+        <p>How Spotify's original internal developer portal became the world's most adopted open-source IDP. From internal tool to platform engineering industry standard.</p>
+      </div>
+      <div class="card" style="border-top:2px solid #fbbf24;opacity:0.7">
+        <div class="card-icon">✈️</div>
+        <h3>Austrian Post — PRIME Model</h3>
+        <p>The rolling refinement model that replaces quarterly PI planning crunches. The source model behind the async BRP cadence in Blueprint 01.</p>
+      </div>
+      <div class="card" style="border-top:2px solid #fbbf24;opacity:0.7">
+        <div class="card-icon">🏥</div>
+        <h3>Healthcare / Regulated Industry</h3>
+        <p>Agile delivery under regulatory constraint. Embedded compliance champions, automated compliance gates in CI/CD, risk-based autonomy tiers. The ING financial services model extended.</p>
+      </div>
+      <div class="card" style="border-top:2px solid #fbbf24;opacity:0.7">
+        <div class="card-icon">🏢</div>
+        <h3>Retail at Scale (Emerging)</h3>
+        <p>The tribe/squad model applied to large-scale retail technology. Async PI cadence, offshore capability hubs, commercial partner integrations across loyalty, data, and media platforms.</p>
+      </div>
+    </div>
+
+    <div class="callout" style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);">
+      <div class="callout-header" style="color:#fbbf24">📚 Wiki Philosophy</div>
+      <p style="color:rgba(251,200,140,0.85);">This wiki is a living document. Case studies are most valuable not as inspiration but as <strong>diagnostic evidence</strong> — the conditions that made delivery transformations work, the failure modes that emerge at scale, and the transferable principles that survive context change. Every case study here is examined through that lens: mechanism over mythology. The SPC authority move is being able to say not just "Spotify did X" but "the structural condition that made X work at Spotify was Y — and here is whether Y exists in your organisation."</p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PANEL 10 · DECENTRALISED TEAMS BLUEPRINT
+═══════════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-decentralised">
+<div class="container">
+
+  <div class="section">
+    <div class="s-label" style="color:#22d3ee">Blueprint 10</div>
+    <div class="s-title">Decentralised Teams Blueprint</div>
+    <p class="s-intro">
+      87% of tech companies plan to maintain or expand distributed teams. 32% of developers globally now work remotely. Distribution is not a constraint to manage — it is a delivery model to architect deliberately. The SPC who understands the structural, cultural, and technical conditions for high-performing distributed teams operates at the frontier of the profession in 2026.
+    </p>
+  </div>
+
+  <!-- SIGNALS -->
+  <div class="section">
+    <div class="s-label" style="color:#22d3ee">Current State · 2026</div>
+    <div class="signal-strip">
+      <div class="signal-cell"><div class="signal-value" style="color:#22d3ee">87%</div><div class="signal-label">Tech companies maintaining or expanding distributed teams</div></div>
+      <div class="signal-cell"><div class="signal-value" style="color:#22d3ee">32%</div><div class="signal-label">Developers globally working remotely (Stack Overflow 2025)</div></div>
+      <div class="signal-cell"><div class="signal-value" style="color:#22d3ee">$634B</div><div class="signal-label">Global IT outsourcing market in 2026 — growing 6.2% p.a.</div></div>
+      <div class="signal-cell"><div class="signal-value" style="color:#22d3ee">$670K</div><div class="signal-label">Avg extra breach cost linked to shadow AI in distributed orgs (IBM 2025)</div></div>
+      <div class="signal-cell"><div class="signal-value" style="color:#22d3ee">1 day</div><div class="signal-label">Cost of every unresolved async decision in a distributed team</div></div>
+    </div>
+  </div>
+
+  <!-- THREE MODELS -->
+  <div class="section">
+    <div class="s-label" style="color:#22d3ee">Structure</div>
+    <div class="s-title">Three distributed team models — choose deliberately</div>
+    <div class="grid-3">
+      <div class="card" style="border-top:2px solid #22d3ee">
+        <div class="card-icon">🌐</div>
+        <h3>Fully Distributed (Remote-First)</h3>
+        <p>No central office. Every team member remote. Async is the default, not the exception. Tools, norms, and culture all built for distribution from inception.</p>
+        <ul>
+          <li>Works best when: async discipline is mature, domain boundaries are clean, platform is self-service</li>
+          <li>Fails when: decisions require constant live negotiation, architecture is tightly coupled, culture treats remote as second-class</li>
+          <li>SAFe lens: ART ceremonies redesigned as async-first with compressed live touchpoints</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:2px solid #22d3ee">
+        <div class="card-icon">🏢</div>
+        <h3>Hub-and-Spoke (Offshore Capability Hubs)</h3>
+        <p>Central onshore team with one or more offshore capability hubs. Hubs own distinct service boundaries or capability domains — not slices of every feature.</p>
+        <ul>
+          <li>Works best when: domain decomposition aligns with hub geography, overlap window is used for decisions only, hubs treated as insiders not vendors</li>
+          <li>Fails when: hubs are task executors rather than domain owners, coordination overhead isn't budgeted</li>
+          <li>SAFe lens: each hub = a set of Agile Teams within the ART with clear PI commitments</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:2px solid #22d3ee">
+        <div class="card-icon">☀️</div>
+        <h3>Follow-the-Sun (FTS)</h3>
+        <p>Single work item owned by one site at any moment. At end of day, ownership transferred to the next timezone west. Designed for continuous 24-hour delivery cycles.</p>
+        <ul>
+          <li>Works best for: incident response, QA automation, platform ops, CI/CD monitoring</li>
+          <li>Fails for: complex feature development requiring tight collaboration — handoff cost exceeds gain</li>
+          <li>Start with 2-site before 3-site. Every additional site multiplies handoff complexity.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ASYNC OPERATING SYSTEM -->
+  <div class="section">
+    <div class="s-label" style="color:#22d3ee">Operating Model</div>
+    <div class="s-title">Async-first as an operating system — not a communication preference</div>
+    <p class="s-intro">The most common failure in distributed delivery is treating async as a fallback for when you can't meet. The highest-performing distributed teams treat async as the primary operating mode and synchronous time as the scarce resource it is.</p>
+
+    <table class="bp-table">
+      <thead>
+        <tr><th>Communication type</th><th>Default mode</th><th>When to go synchronous</th><th>Artifact standard</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="td-primary">Daily progress</span>What I did / next / blocked</td>
+          <td>Async standup — written, structured format</td>
+          <td>Never. If it needs a call, it's a blocker escalation</td>
+          <td>Progress + next step + blocker + owner. Max 5 lines.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Feature specification</span>What we're building and why</td>
+          <td>Written Feature Readiness Card (INVEST)</td>
+          <td>Kick-off only — once, to confirm shared understanding</td>
+          <td>"If a story cannot be understood without a meeting, it is not ready."</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Technical decision</span>Architecture, approach, trade-off</td>
+          <td>Architecture Decision Record (ADR)</td>
+          <td>When decision requires emotional alignment or conflict resolution</td>
+          <td>Context + options + decision + consequences. Permanent record.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Code review</span>PR feedback and approval</td>
+          <td>Async — written comments with clear accept/change/reject</td>
+          <td>When review reveals a design flaw requiring dialogue</td>
+          <td>SLA: response within X hours defined by site. Tracked as PR Review Latency.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Cross-timezone handoff</span>Work item transfer between sites</td>
+          <td>Structured handoff packet</td>
+          <td>Never. If it needs a call to hand off, the packet was incomplete</td>
+          <td>State + next action + blockers + owner + expected response time.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Dependency negotiation</span>Cross-ART, cross-team</td>
+          <td>Async: dependency map + written proposal</td>
+          <td>Pre-PI session — 60 min, all SADLs, decisions only</td>
+          <td>From/to team + feature + resolution + risk level + owner.</td>
+        </tr>
+        <tr>
+          <td><span class="td-primary">Incident response</span>Production issue triage</td>
+          <td>Synchronous — this is the FTS model's primary use case</td>
+          <td>Always for Sev 1/2. FTS rotation covers coverage without on-call fatigue</td>
+          <td>Incident timeline + actions + owner documented in real-time for async handoff.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- GOVERNANCE FOR DISTRIBUTED -->
+  <div class="section">
+    <div class="s-label" style="color:#22d3ee">Governance</div>
+    <div class="s-title">What breaks in distributed governance — and the fixes</div>
+    <div class="matrix">
+      <div class="matrix-cell">
+        <h4 style="color:#ff5555">Common Failure Modes</h4>
+        <ul>
+          <li>Decisions that require a synchronous call with AEST engineers — every such decision costs 24hrs minimum</li>
+          <li>Governance ceremonies scheduled in one timezone's working hours — offshore team attends at 11pm or skips</li>
+          <li>Status meetings instead of async risk digests — offshore engineers in meetings, not building</li>
+          <li>Vendor relationship, not team relationship — offshore treated as external, excluded from PI context</li>
+          <li>Shadow AI undetected until a breach — distributed adoption is faster and harder to audit</li>
+          <li>Cross-site attrition invisible — NPS averaged across sites masks a failing hub</li>
+        </ul>
+      </div>
+      <div class="matrix-cell">
+        <h4 style="color:#22d3ee">The Fixes</h4>
+        <ul>
+          <li>Decision rights matrix: what can be decided async, what needs live overlap, who has final call — documented, not assumed</li>
+          <li>Rotate ceremony times: share inconvenient windows equitably across sites. Permanent AEST-only governance signals hierarchy</li>
+          <li>Replace status meetings with async risk digest — written, Monday AM, actionable, 5 risks max</li>
+          <li>Onboard offshore as insiders: shared company values, team rituals, PI context, product vision</li>
+          <li>Explicit AI tool governance: approved list in onboarding, fast addition process, shadow AI on retro survey</li>
+          <li>Site-segmented SPACE metrics: satisfaction and NPS by hub, not aggregated</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLATFORM AS EQUALISER -->
+  <div class="section">
+    <div class="s-label" style="color:#22d3ee">Platform Engineering for Distributed Teams</div>
+    <div class="s-title">The IDP is the single highest-leverage investment for distribution</div>
+    <div class="grid-2">
+      <div class="card" style="border-top:2px solid #22d3ee">
+        <h3>What the IDP Must Provide for Distributed Teams</h3>
+        <ul>
+          <li>Self-service environment provisioning — no timezone-gated approvals. An offshore engineer should provision in minutes, not wait for an AEST approval ticket</li>
+          <li>Reproducible dev environments: identical local setup regardless of geography. Eliminates cross-timezone "works on my machine" debugging</li>
+          <li>Self-service observability: distributed engineers diagnose production issues without waking another timezone</li>
+          <li>Async-accessible documentation: service catalog, ADRs, runbooks — all findable without a Slack message to the AEST team</li>
+          <li>AI coding assistant integrated in golden path — same tooling, same guardrails, every site</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:2px solid #22d3ee">
+        <h3>The Netflix Distributed Lesson</h3>
+        <ul>
+          <li>"We don't mandate adoption of paved roads, but we ensure development using them is a far better experience than not" — engineers adopt voluntarily because the path is genuinely superior</li>
+          <li>Paved roads remove the need for timezone coordination on infrastructure decisions. Each team self-serves within guardrails</li>
+          <li>Full-cycle ownership: engineers in any geography own build, deploy, operate, AND support for their service. No handoff to an AEST ops team</li>
+          <li>Internal marketing of platform improvements: "Our customers have day jobs" — the platform team runs adoption campaigns, makes migrations seamless. Applies equally across timezones.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPC CHECKLIST -->
+  <div class="section">
+    <div class="s-label" style="color:#22d3ee">SPC Engagement Checklist</div>
+    <div class="s-title">Diagnosing a distributed team delivery problem — where to look first</div>
+    <div class="checklist">
+      <div class="cl-item">
+        <input type="checkbox" id="dc1">
+        <label for="dc1"><strong>Architecture audit first</strong>Map domain boundaries against hub geography. If teams own cross-hub features rather than distinct bounded contexts, most "coordination problems" are actually architecture problems. Fix the boundary before fixing the process.</label>
+      </div>
+      <div class="cl-item">
+        <input type="checkbox" id="dc2">
+        <label for="dc2"><strong>Measure async discipline</strong>Track async decision rate, PR review latency by timezone, and handoff packet completion rate. If &lt;70% of decisions are made async, the team is running a co-located operating model on a distributed team — it will always underperform.</label>
+      </div>
+      <div class="cl-item">
+        <input type="checkbox" id="dc3">
+        <label for="dc3"><strong>Audit the overlap window</strong>What percentage of live sync time is decisions vs. status? If status dominates, replace with async risk digest and reclaim overlap for high-value decisions only.</label>
+      </div>
+      <div class="cl-item">
+        <input type="checkbox" id="dc4">
+        <label for="dc4"><strong>Check IDP self-service completeness</strong>Can an engineer in every hub provision, deploy, and diagnose without a timezone-gated approval or Slack message to AEST? If not, the platform is not serving the distributed model.</label>
+      </div>
+      <div class="cl-item">
+        <input type="checkbox" id="dc5">
+        <label for="dc5"><strong>Run site-segmented SPACE</strong>Average DORA and NPS metrics mask failing hubs. Break satisfaction and throughput data by site before drawing any delivery conclusions.</label>
+      </div>
+      <div class="cl-item">
+        <input type="checkbox" id="dc6">
+        <label for="dc6"><strong>Shadow AI audit</strong>Ask each hub what AI tools engineers are using day-to-day. The answer will differ from the approved list. Channel it with governance — don't ban it and drive it further underground.</label>
+      </div>
+      <div class="cl-item">
+        <input type="checkbox" id="dc7">
+        <label for="dc7"><strong>Verify true cost model</strong>Is the distributed team budget including coordination overhead (15–25% of a senior TL's time per 5 offshore engineers), in-person gathering investment, and IP/security tooling? If not, the model is under-resourced for governance and will fail at scale.</label>
+      </div>
+      <div class="cl-item">
+        <input type="checkbox" id="dc8">
+        <label for="dc8"><strong>Insider test</strong>Do offshore engineers receive the same PI context, product vision, and company culture onboarding as onshore? Can they name the product OKRs for this PI? If not, they are operating as a vendor, not a team — and the delivery signal difference is measurable.</label>
+      </div>
+    </div>
+
+    <div class="callout" style="background:rgba(34,211,238,0.07);border:1px solid rgba(34,211,238,0.2);">
+      <div class="callout-header" style="color:#22d3ee">🏆 SPC Authority Point</div>
+      <p style="color:rgba(180,240,255,0.85);">The highest-value distributed team intervention is reframing the problem. Clients present "offshore team performance issues." The root cause is almost always one of three things: <strong>architecture coupling</strong> (teams can't work independently), <strong>async discipline failure</strong> (co-located habits on distributed infrastructure), or <strong>platform maturity gaps</strong> (timezone-gated approvals in an IDP that isn't truly self-service). Each has a different prescription. The SPC who can diagnose which one — using the metrics, the architecture map, and the async audit — is operating at a different level than one who recommends "better communication tools."</p>
+    </div>
+  </div>
+
+</div>
+</div>
